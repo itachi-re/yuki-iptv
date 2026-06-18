@@ -1,0 +1,1423 @@
+# yuki-iptv - IPTV player with EPG support
+# This file is distributed under the same license as the yuki-iptv package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: yuki-iptv\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-07 06:18+0000\n"
+"PO-Revision-Date: 2025-01-01 10:15+0000\n"
+"Last-Translator: liya <liya@users.noreply.translate.codeberg.org>\n"
+"Language-Team: Vietnamese <https://translate.codeberg.org/projects/yuki-iptv/"
+"yuki-iptv/vi/>\n"
+"Language: vi_VN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 5.9.2\n"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:571 usr/lib/yuki-iptv/yuki-iptv.py:3113
+#: usr/lib/yuki-iptv/yuki-iptv.py:3173 usr/lib/yuki-iptv/yuki-iptv.py:3336
+#: usr/lib/yuki-iptv/yuki-iptv.py:3970 usr/lib/yuki-iptv/yuki-iptv.py:3971
+#: usr/lib/yuki-iptv/yuki-iptv.py:4596 usr/lib/yuki-iptv/yuki_iptv/m3u.py:35
+#: usr/lib/yuki-iptv/yuki_iptv/playlist.py:283
+#: usr/lib/yuki-iptv/yuki_iptv/playlist.py:303
+#: usr/lib/yuki-iptv/yuki_iptv/playlist.py:304
+#: usr/lib/yuki-iptv/yuki_iptv/playlist.py:305
+#: usr/lib/yuki-iptv/yuki_iptv/xspf.py:30
+#: usr/lib/yuki-iptv/yuki_iptv/xtreamtom3u.py:36
+msgid "All channels"
+msgstr "Mọi kênh"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:597
+#: usr/lib/yuki-iptv/yuki_iptv/playlist.py:99
+#: usr/lib/yuki-iptv/yuki_iptv/playlist.py:111
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:163
+#: usr/lib/yuki-iptv/yuki_iptv/qt.py:43
+msgid "Error"
+msgstr "Sửa"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:707
+msgid "Are you sure?"
+msgstr "Bạn có chắc?"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:734 usr/lib/yuki-iptv/yuki-iptv.py:1879
+msgid "Double click to change"
+msgstr "Nhấp đôi để thay đổi"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:811
+msgid "Shortcut already used"
+msgstr "Phím tắt đã được dùng"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:827 usr/lib/yuki-iptv/yuki-iptv.py:837
+#: usr/lib/yuki-iptv/yuki-iptv.py:4420 usr/lib/yuki-iptv/yuki-iptv.py:4540
+msgid "No TV guide for channel"
+msgstr "Không có lịch phát sóng cho kênh này"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:915 usr/lib/yuki-iptv/yuki-iptv.py:6692
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:320
+msgid "Archive"
+msgstr "Lưu trữ"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:943 usr/lib/yuki-iptv/yuki-iptv.py:1668
+#: usr/lib/yuki-iptv/yuki-iptv.py:3749 usr/lib/yuki-iptv/yuki-iptv.py:3752
+#: usr/lib/yuki-iptv/yuki-iptv.py:3767 usr/lib/yuki-iptv/yuki_iptv/gui.py:956
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:974
+msgid "Default"
+msgstr "Mặc định"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:957
+msgid "Failed to open external player!"
+msgstr "Không thể mở trình phát bên ngoài!"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1028
+#: usr/lib/yuki-iptv/yuki_iptv/multiepg.py:135
+msgid "Channel"
+msgstr "Kênh"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1029 usr/lib/yuki-iptv/yuki_iptv/gui.py:1509
+msgid "Start record time"
+msgstr "Thời gian bắt đầu ghi hình"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1030 usr/lib/yuki-iptv/yuki_iptv/gui.py:1510
+msgid "End record time"
+msgstr "Thời gian kết thúc ghi hình"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1117 usr/lib/yuki-iptv/yuki-iptv.py:6689
+msgid "Scheduler"
+msgstr "Lịch trình"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1153
+msgid "No planned recordings"
+msgstr "Không có lịch trình ghi hình"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1161 usr/lib/yuki-iptv/yuki-iptv.py:6037
+msgid "Waiting for record"
+msgstr "Đang chờ ghi hình"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1202
+msgid "Recording"
+msgstr "Đang ghi hình"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1203
+msgid "Status"
+msgstr "Trạng thái"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1270
+msgid "Select folder for recordings and screenshots"
+msgstr "Chọn thư mục cho các bản ghi và ảnh chụp màn hình"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1314 usr/lib/yuki-iptv/yuki-iptv.py:1315
+#: usr/lib/yuki-iptv/yuki-iptv.py:1332 usr/lib/yuki-iptv/yuki-iptv.py:1336
+#: usr/lib/yuki-iptv/yuki-iptv.py:4874 usr/lib/yuki-iptv/yuki-iptv.py:4880
+#: usr/lib/yuki-iptv/yuki-iptv.py:4898 usr/lib/yuki-iptv/yuki-iptv.py:4902
+msgid "Average Bitrate"
+msgstr "Tốc độ bit trung bình"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1332 usr/lib/yuki-iptv/yuki-iptv.py:1336
+#: usr/lib/yuki-iptv/yuki-iptv.py:1350 usr/lib/yuki-iptv/yuki-iptv.py:1355
+#: usr/lib/yuki-iptv/yuki-iptv.py:1377 usr/lib/yuki-iptv/yuki-iptv.py:1394
+#: usr/lib/yuki-iptv/yuki-iptv.py:1400 usr/lib/yuki-iptv/yuki-iptv.py:1412
+#: usr/lib/yuki-iptv/yuki-iptv.py:1451 usr/lib/yuki-iptv/yuki-iptv.py:1455
+#: usr/lib/yuki-iptv/yuki-iptv.py:4875 usr/lib/yuki-iptv/yuki-iptv.py:4881
+#: usr/lib/yuki-iptv/yuki-iptv.py:4917 usr/lib/yuki-iptv/yuki-iptv.py:4919
+#: usr/lib/yuki-iptv/yuki-iptv.py:4929 usr/lib/yuki-iptv/yuki-iptv.py:4935
+msgid "General"
+msgstr "Tổng quan"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1333 usr/lib/yuki-iptv/yuki-iptv.py:1337
+#: usr/lib/yuki-iptv/yuki-iptv.py:6096
+msgid "kbps"
+msgstr "kbps"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1351
+msgid "Dimensions"
+msgstr "Kích thước"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1355
+msgid "Aspect"
+msgstr "Tỉ lệ khung hình"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1359 usr/lib/yuki-iptv/yuki-iptv.py:1363
+#: usr/lib/yuki-iptv/yuki-iptv.py:1367 usr/lib/yuki-iptv/yuki-iptv.py:1452
+#: usr/lib/yuki-iptv/yuki-iptv.py:4918 usr/lib/yuki-iptv/yuki-iptv.py:4932
+msgid "Color"
+msgstr "Màu sắc"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1360
+msgid "Pixel Format"
+msgstr "Định dạng điểm ảnh"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1363 usr/lib/yuki-iptv/yuki_iptv/gui.py:1000
+msgid "Gamma"
+msgstr "Gamma"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1368
+msgid "Bits Per Pixel"
+msgstr "Số bit trên mỗi điểm ảnh"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1377 usr/lib/yuki-iptv/yuki-iptv.py:1412
+msgid "Codec"
+msgstr "Codec"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1388
+msgid "surround sound"
+msgstr "âm thanh vòm"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1389 usr/lib/yuki-iptv/yuki-iptv.py:1402
+#: usr/lib/yuki-iptv/yuki-iptv.py:1456 usr/lib/yuki-iptv/yuki-iptv.py:4920
+#: usr/lib/yuki-iptv/yuki-iptv.py:4938
+msgid "Layout"
+msgstr "Bố cục"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1390
+msgid "Channels"
+msgstr "Kênh"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1394
+msgid "Sample Rate"
+msgstr "Tần số lấy mẫu"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1400
+msgid "Format"
+msgstr "Định dạng"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1403
+msgid "Channel Count"
+msgstr "Số lượng kênh"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:1637 usr/lib/yuki-iptv/yuki-iptv.py:3953
+#: usr/lib/yuki-iptv/yuki-iptv.py:4161 usr/lib/yuki-iptv/yuki-iptv.py:4182
+#: usr/lib/yuki-iptv/yuki-iptv.py:6141
+msgid "Loading..."
+msgstr "Đang tải..."
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:2133 usr/lib/yuki-iptv/yuki_iptv/gui.py:261
+msgid "Pause"
+msgstr "Tạm dừng"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:2140
+msgid "Play"
+msgstr "Phát"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:2735 usr/lib/yuki-iptv/yuki-iptv.py:3534
+#: usr/lib/yuki-iptv/yuki-iptv.py:3867 usr/lib/yuki-iptv/yuki-iptv.py:4097
+#: usr/lib/yuki-iptv/yuki-iptv.py:4126 usr/lib/yuki-iptv/yuki-iptv.py:5123
+msgid "Nothing found"
+msgstr "Không tìm thấy gì cả"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:2914 usr/lib/yuki-iptv/yuki-iptv.py:2998
+#: usr/lib/yuki-iptv/yuki-iptv.py:6405 usr/lib/yuki-iptv/yuki_iptv/gui.py:302
+msgid "Volume"
+msgstr "Âm lượng"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:2926
+msgid "To exit fullscreen mode press"
+msgstr "Để thoát khỏi chế độ toàn màn hình, nhấn"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:3023 usr/lib/yuki-iptv/yuki-iptv.py:3030
+msgid "Volume off"
+msgstr "Tắt âm lượng"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:3174 usr/lib/yuki-iptv/yuki-iptv.py:3878
+#: usr/lib/yuki-iptv/yuki-iptv.py:3973 usr/lib/yuki-iptv/yuki-iptv.py:3974
+#: usr/lib/yuki-iptv/yuki-iptv.py:4597
+#: usr/lib/yuki-iptv/yuki_iptv/playlist.py:305
+msgid "Favourites"
+msgstr "Yêu thích"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:3333 usr/lib/yuki-iptv/yuki-iptv.py:3336
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:931
+#: usr/lib/yuki-iptv/yuki_iptv/multiepg.py:121
+msgid "Group"
+msgstr "Nhóm"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:3576 usr/lib/yuki-iptv/yuki_iptv/gui.py:1345
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1490
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1624
+msgid "Search channel"
+msgstr "Tìm kênh"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:3588
+msgid "Search movie"
+msgstr "Tìm phim lẻ"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:3600
+msgid "Search series"
+msgstr "Tìm phim bộ"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:3776
+msgid "Delete from favourites"
+msgstr "Xóa khỏi danh sách yêu thích"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:3840
+msgid "Remove channel from Favourites+?"
+msgstr "Bạn có muốn xóa kênh khỏi danh sách yêu thích+?"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:3876 usr/lib/yuki-iptv/yuki-iptv.py:6693
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:332
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1215
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1230
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:339
+msgid "TV guide"
+msgstr "Lịch phát sóng"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:3877
+msgid "Hide TV guide"
+msgstr "Ẩn lịch phát sóng"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:3880
+msgid "Favourites+ (separate playlist)"
+msgstr "Yêu thích+ (danh sách phát riêng)"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:3882 usr/lib/yuki-iptv/yuki_iptv/gui.py:1210
+msgid "Open in external player"
+msgstr "Mở bằng trình phát bên ngoài"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:3883 usr/lib/yuki-iptv/yuki_iptv/gui.py:1205
+msgid "Video settings"
+msgstr "Cài đặt video"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:4133 usr/lib/yuki-iptv/yuki-iptv.py:4180
+msgid "Back"
+msgstr "Quay lại"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:4209
+msgid "TV channels"
+msgstr "Kênh TV"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:4209
+msgid "Movies"
+msgstr "Phim lẻ"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:4209
+msgid "Series"
+msgstr "Phim bộ"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:4323
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:566
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:568
+msgid "Playlist"
+msgstr "Danh sách phát"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:4378
+msgid "Doing screenshot..."
+msgstr "Đang chụp màn hình..."
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:4391
+msgid "Screenshot saved!"
+msgstr "Ảnh chụp màn hình đã được lưu!"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:4394
+msgid "Screenshot saving error!"
+msgstr "Lỗi lưu ảnh chụp màn hình!"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:4398 usr/lib/yuki-iptv/yuki-iptv.py:4805
+#: usr/lib/yuki-iptv/yuki-iptv.py:4948
+msgid "No channel selected"
+msgstr "Không có kênh nào được chọn"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:4513
+msgid "Open archive"
+msgstr "Mở lưu trữ"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:4567 usr/lib/yuki-iptv/yuki-iptv.py:4576
+msgid "channels"
+msgstr "các kênh"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:4659
+msgid "Preparing record"
+msgstr "Đang chuẩn bị ghi hình"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:4703
+msgid "No channel selected for record"
+msgstr "Chưa chọn kênh để ghi hình"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:4783
+msgid "IPTV player with EPG support"
+msgstr "Trình phát IPTV hỗ trợ EPG"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:4786
+msgid "Using Qt {}"
+msgstr "Sử dụng Qt {}"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:4794
+msgid "Using libmpv {}"
+msgstr "Sử dụng libmpv {}"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:4924 usr/lib/yuki-iptv/yuki_iptv/gui.py:768
+msgid "Video"
+msgstr "Video"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:4935
+msgid "Audio"
+msgstr "Audio"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:4951 usr/lib/yuki-iptv/yuki-iptv.py:6684
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:333
+msgid "Stream Information"
+msgstr "Thông tin luồng phát"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:5017
+msgid "Playing error"
+msgstr "Lỗi phát"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:5174 usr/lib/yuki-iptv/yuki-iptv.py:5175
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:606
+msgid "Unknown"
+msgstr "Không rõ"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:5988
+msgid "Updating TV guide..."
+msgstr "Đang cập nhật lịch phát sóng..."
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:5997
+msgid "TV guide update error!"
+msgstr "Lỗi cập nhật lịch phát sóng!"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6005
+msgid "EPG is outdated!"
+msgstr "EPG đã lỗi thời!"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6013
+msgid "TV guide update done!"
+msgstr "Hoàn tất cập nhật lịch phát sóng!"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6095
+msgid "bps"
+msgstr "bps"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6097
+msgid "Mbps"
+msgstr "Mbps"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6098
+msgid "Gbps"
+msgstr "Gbps"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6099
+msgid "Tbps"
+msgstr "Tbps"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6650
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:206
+#, python-format
+msgid "-%d second"
+msgid_plural "-%d seconds"
+msgstr[0] "-%d giây"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6651
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:207
+#, python-format
+msgid "+%d second"
+msgid_plural "+%d seconds"
+msgstr[0] "+%d giây"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6652 usr/lib/yuki-iptv/yuki-iptv.py:6654
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:208
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:210
+#, python-format
+msgid "-%d minute"
+msgid_plural "-%d minutes"
+msgstr[0] "-%d phút"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6653 usr/lib/yuki-iptv/yuki-iptv.py:6655
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:209
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:211
+#, python-format
+msgid "+%d minute"
+msgid_plural "+%d minutes"
+msgstr[0] "+%d phút"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6664 usr/lib/yuki-iptv/yuki-iptv.py:6681
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:295
+msgid "V&olume -"
+msgstr "Giảm âm lượng"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6665 usr/lib/yuki-iptv/yuki-iptv.py:6682
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:299
+msgid "Vo&lume +"
+msgstr "Tăng âm lượng"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6666
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:224
+msgid "&Normal speed"
+msgstr "&Tốc độ bình thường"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6667 usr/lib/yuki-iptv/yuki-iptv.py:6672
+msgid "Quit the program"
+msgstr "Thoát chương trình"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6668 usr/lib/yuki-iptv/yuki_iptv/gui.py:290
+msgid "Record"
+msgstr "Ghi hình"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6669 usr/lib/yuki-iptv/yuki_iptv/gui.py:314
+msgid "Screenshot"
+msgstr "Chụp màn hình"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6670
+msgid "Exit fullscreen"
+msgstr "Thoát toàn màn hình"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6671
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:347
+msgid "&Update TV guide"
+msgstr "&Cập nhật lịch phát sóng"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6673
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:321
+msgid "Show/hide playlist"
+msgstr "Hiển thị/Ẩn danh sách phát"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6674
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:328
+msgid "Show/hide controls panel"
+msgstr "Hiển thị/Ẩn bảng điều khiển"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6675
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:253
+msgid "&Video settings"
+msgstr "&Cài đặt video"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6676 usr/lib/yuki-iptv/yuki-iptv.py:6677
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:244
+msgid "&Fullscreen"
+msgstr "&Toàn màn hình"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6678
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:291
+msgid "&Mute audio"
+msgstr "&Tắt âm"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6679
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:180
+msgid "&Play / Pause"
+msgstr "&Phát / Tạm dừng"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6680
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:184
+msgid "&Stop"
+msgstr "&Dừng"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6683
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:239
+msgid "&Next"
+msgstr "&Tiếp theo"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6685
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:235
+msgid "&Previous"
+msgstr "&Trước đó"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6686
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:169
+msgid "P&laylist editor"
+msgstr "&Sửa danh sách phát"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6687
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:160
+msgid "&Playlists"
+msgstr "&Danh sách phát"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6688
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:164
+msgid "&Update current playlist"
+msgstr "&Cập nhật danh sách phát hiện tại"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6690 usr/lib/yuki-iptv/yuki_iptv/gui.py:1142
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:156
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:476
+msgid "Settings"
+msgstr "Cài đặt"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6691 usr/lib/yuki-iptv/yuki_iptv/gui.py:1200
+msgid "Channel sort"
+msgstr "Sắp xếp kênh"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6694
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:248
+msgid "&Compact mode"
+msgstr "&Chế độ thu gọn"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6695
+msgid "TV guide for all channels"
+msgstr "Lịch phát sóng cho mọi kênh"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6696
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:188
+msgid "&Frame step"
+msgstr "&Bước khung hình"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6697
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:192
+msgid "Fra&me back step"
+msgstr "&Lùi bước khung hình"
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:6698 usr/lib/yuki-iptv/yuki_iptv/gui.py:326
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1220
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:343
+msgid "Multi-EPG"
+msgstr "Đa-EPG"
+
+#: usr/lib/yuki-iptv/yuki_iptv/epg.py:124
+msgid "Updating TV guide... (parsing {}/{})"
+msgstr "Đang cập nhật lịch phát sóng... (phân tích {}/{})"
+
+#: usr/lib/yuki-iptv/yuki_iptv/epg.py:210
+msgid "Updating TV guide... (loading {}/{})"
+msgstr "Đang cập nhật lịch phát sóng... (tải {}/{})"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:267
+msgid "Stop"
+msgstr "Dừng"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:273
+msgid "Fullscreen"
+msgstr "Toàn màn hình"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:279
+msgid "Open recordings folder"
+msgstr "Mở thư mục ghi hình"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:296
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1225
+msgid "Recording scheduler"
+msgstr "Lập lịch ghi hình"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:338
+msgid "Previous channel"
+msgstr "Kênh trước"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:344
+msgid "Next channel"
+msgstr "Kênh tiếp theo"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:436
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1195
+msgid "License"
+msgstr "Giấy phép"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:439
+msgid "About Qt"
+msgstr "Giới thiệu về Qt"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:442
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:497
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:538
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1721
+msgid "Close"
+msgstr "Đóng"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:515
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:399
+msgid "URL"
+msgstr "URL"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:535
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1009
+msgid "Save settings"
+msgstr "Lưu cài đặt"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:540
+msgid "Reset channel settings"
+msgstr "Đặt lại cài đặt kênh"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:542
+msgid "Clear logo cache"
+msgstr "Xóa bộ nhớ đệm logo"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:545
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:551
+msgid "as in playlist"
+msgstr "Theo danh sách phát"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:546
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:552
+msgid "alphabetical order"
+msgstr "Thứ tự chữ cái"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:547
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:553
+msgid "reverse alphabetical order"
+msgstr "Thứ tự chữ cái ngược"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:548
+msgid "custom"
+msgstr "Tùy chỉnh"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:556
+msgid "Partial"
+msgstr "Một phần"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:557
+msgid "Full"
+msgstr "Toàn bộ"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:558
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:933
+msgid "Hide"
+msgstr "Ẩn"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:571
+msgid ""
+"Do not update\n"
+"EPG at boot"
+msgstr "Không cập nhật EPG khi khởi động"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:576
+msgid ""
+"Open previous channel\n"
+"at startup"
+msgstr "Mở kênh trước khi khởi động"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:579
+msgid "Hide EPG percentage"
+msgstr "Ẩn phần trăm EPG"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:582
+msgid "Hide EPG from playlist"
+msgstr "Ẩn EPG khỏi danh sách phát"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:585
+msgid "Hide bitrate / video info"
+msgstr "Ẩn thông tin bitrate / video"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:588
+msgid "Volume change step"
+msgstr "Bước thay đổi âm lượng"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:596
+msgid "mpv options"
+msgstr "Tùy chọn chương trình phát mpv"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:597
+msgid "list"
+msgstr "danh sách"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:619
+msgid ""
+"Floating panel\n"
+"position"
+msgstr "Vị trí bảng nổi"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:622
+msgid "Right"
+msgstr "Phải"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:623
+msgid "Left"
+msgstr "Trái"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:624
+msgid "Separate window"
+msgstr "Cửa sổ riêng biệt"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:627
+msgid ""
+"Switch channels with\n"
+"the mouse wheel"
+msgstr "Chuyển kênh bằng con lăn chuột"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:630
+msgid ""
+"Automatic\n"
+"reconnection"
+msgstr "Tự động kết nối lại"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:632
+msgid "Low latency mode"
+msgstr "Chế độ độ trễ thấp"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:634
+msgid ""
+"by default:\n"
+"change volume"
+msgstr "Thay đổi âm lượng mặc định"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:644
+msgid ""
+"Show playlist\n"
+"on mouse move"
+msgstr "Hiển thị danh sách phát khi di chuyển chuột"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:649
+msgid ""
+"Show controls\n"
+"on mouse move"
+msgstr "Hiển thị điều khiển khi di chuyển chuột"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:653
+msgid "Channel logos"
+msgstr "Logo kênh"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:655
+msgid "Prefer M3U"
+msgstr "Ưu tiên M3U"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:656
+msgid "Prefer EPG"
+msgstr "Ưu tiên EPG"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:657
+msgid "Do not load from EPG"
+msgstr "Không tải từ EPG"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:658
+msgid "Do not load any logos"
+msgstr "Không tải bất kỳ logo nào"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:660
+msgid "Do not cache EPG"
+msgstr "Không lưu bộ đệm EPG"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:664
+msgid ""
+"Do not create screenshots\n"
+"and recordings subfolders"
+msgstr "Không tạo thư mục con cho ảnh chụp màn hình và ghi hình"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:669
+msgid "Hide the current television program"
+msgstr "Ẩn chương trình truyền hình hiện tại"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:673
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1001
+msgid "Aspect ratio"
+msgstr "Tỷ lệ khung hình"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:674
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1002
+msgid "Scale / Zoom"
+msgstr "Phóng to / Thu nhỏ"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:675
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1003
+msgid "Pan and scan"
+msgstr "Quét toàn cảnh"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:685
+msgid "Enable rewind"
+msgstr "Bật tua lại"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:689
+msgid "Hide channel logos"
+msgstr "Ẩn logo kênh"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:694
+msgid "Show/hide playlist by left mouse click"
+msgstr "Hiện/Ẩn danh sách phát bằng chuột trái"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:699
+msgid "Enable transparency for floating panels"
+msgstr ""
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:705
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:930
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:378
+msgid "User agent"
+msgstr "Tác nhân người dùng (UA)"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:706
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1006
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:382
+msgid "HTTP Referer:"
+msgstr "Trang giới thiệu HTTP:"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:725
+#, python-format
+msgid "%d second"
+msgid_plural "%d seconds"
+msgstr[0] "%d giây"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:727
+msgid "Or select provider"
+msgstr "Hoặc chọn nhà cung cấp"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:736
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:304
+msgid "M3U / XSPF playlist"
+msgstr "Danh sách phát M3U / XSPF"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:738
+msgid ""
+"Update playlist\n"
+"at launch"
+msgstr "Cập nhật danh sách phát khi chạy chương trình"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:740
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:305
+msgid ""
+"TV guide\n"
+"address"
+msgstr "Địa chỉ lịch phát sóng"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:741
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:929
+msgid "Deinterlace"
+msgstr "Khử nhiễu hình"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:742
+msgid ""
+"Channel\n"
+"sort"
+msgstr "Sắp xếp kênh"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:744
+msgid ""
+"Categories\n"
+"sort"
+msgstr "Sắp xếp danh mục"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:747
+msgid "EPG description view"
+msgstr "Xem mô tả EPG"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:749
+msgid "Cache"
+msgstr "Bộ đệm"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:750
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:412
+msgid "UDP proxy"
+msgstr "Proxy UDP"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:752
+msgid ""
+"Folder for recordings\n"
+"and screenshots"
+msgstr "Thư mục lưu bản ghi và ảnh chụp màn hình"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:767
+msgid "Main"
+msgstr "Chính"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:769
+msgid "Network"
+msgstr "Mạng"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:770
+msgid "GUI"
+msgstr "Giao diện đồ họa"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:771
+msgid "Actions"
+msgstr "Hành động"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:772
+msgid "Catchup"
+msgstr "Xem lại"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:773
+msgid "EPG"
+msgstr "Lịch phát sóng"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:774
+msgid "Other"
+msgstr "Khác"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:775
+msgid "Debug"
+msgstr "Gỡ lỗi"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:892
+msgid "WARNING: experimental function, working with problems"
+msgstr "CẢNH BÁO: Chức năng thử nghiệm, có thể gặp vấn đề khi sử dụng"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:996
+msgid "Contrast"
+msgstr "Độ tương phản"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:997
+msgid "Brightness"
+msgstr "Độ sáng"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:998
+msgid "Hue"
+msgstr "Tông màu"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:999
+msgid "Saturation"
+msgstr "Độ bão hòa"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1004
+msgid "EPG name"
+msgstr "Tên EPG"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1147
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:357
+msgid "Shortcuts"
+msgstr "Phím tắt"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1164
+msgid "Description"
+msgstr "Mô tả"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1164
+msgid "Shortcut"
+msgstr "Phím tắt"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1178
+msgid "Reset to defaults"
+msgstr "Đặt lại mặc định"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1185
+msgid "Modify shortcut"
+msgstr "Chỉnh sửa phím tắt"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1190
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:365
+msgid "&About yuki-iptv"
+msgstr "&Giới thiệu về yuki-iptv"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1314
+msgid "Rewind"
+msgstr "Tua lại"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1347
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1492
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1626
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1682
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1684
+msgid "Search"
+msgstr "Tìm kiếm"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1363
+msgid "Page"
+msgstr "Trang"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1452
+msgid "Processing record..."
+msgstr "Đang xử lý bản ghi..."
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1478
+msgid "Planned recordings"
+msgstr "Các bản ghi đã lên lịch"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1479
+msgid "Active recordings"
+msgstr "Các bản ghi đang diễn ra"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1482
+msgid "Choose channel"
+msgstr "Chọn kênh"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1486
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:360
+msgid "Add"
+msgstr "Thêm"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1487
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:365
+msgid "Remove"
+msgstr "Xóa"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1525
+msgid ""
+"Post-recording\n"
+"action"
+msgstr "Hành động sau khi ghi"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1527
+msgid "Nothing to do"
+msgstr "Không làm gì"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1528
+msgid "Press Stop"
+msgstr "Nhấn Dừng"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1584
+msgid "Recording of two channels simultaneously is not available!"
+msgstr "Không thể ghi đồng thời hai kênh!"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1600
+msgid ""
+"Press the key combination\n"
+"you want to assign"
+msgstr "Nhấn tổ hợp phím bạn muốn gán"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1602
+msgid "Cancel"
+msgstr "Hủy"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1603
+msgid "OK"
+msgstr "Đồng ý"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1639
+msgid "Show only channels in playlist"
+msgstr "Chỉ hiển thị kênh trong danh sách phát"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1709
+msgid "Open"
+msgstr "Mở"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1724
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:402
+msgid "Save"
+msgstr "Lưu"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui.py:1728
+msgid ""
+"Do not forget\n"
+"to set custom sort order in settings!"
+msgstr "Đừng quên thiết lập thứ tự sắp xếp tùy chỉnh trong cài đặt!"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:42
+msgid "All Files"
+msgstr "Tất cả tệp"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:78
+msgid "Select"
+msgstr "Chọn"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:85
+msgid "Edit"
+msgstr "Chỉnh sửa"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:94
+msgid "Delete"
+msgstr "Xóa"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:121
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:300
+msgid "Playlists"
+msgstr "Danh sách phát"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:144
+msgid "Add playlist"
+msgstr "Thêm danh sách phát"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:193
+msgid "Search playlists by title"
+msgstr "Tìm kiếm danh sách phát theo tiêu đề"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:206
+msgid "Please select a playlist from the list or add a new playlist"
+msgstr ""
+"Vui lòng chọn một danh sách phát từ danh sách hoặc thêm danh sách phát mới"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:303
+msgid "Name"
+msgstr "Tên"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:309
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:350
+msgid "Path to file or URL"
+msgstr "Đường dẫn đến tệp hoặc URL"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:319
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:89
+msgid "Select playlist"
+msgstr "Chọn danh sách phát"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:331
+msgid "Select EPG file"
+msgstr "Chọn tệp EPG"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:395
+msgid "Username"
+msgstr "Tên đăng nhập"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:397
+msgid "Password"
+msgstr "Mật khẩu"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:461
+msgid "TV guide offset"
+msgstr "Thay đổi lịch phát sóng"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:463
+#, python-format
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] "%d giờ"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:559
+msgid "URL not specified!"
+msgstr "URL không được chỉ định!"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:625
+msgid "Expiration date"
+msgstr "Ngày hết hạn"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:736
+msgid "Delete playlist permanently?"
+msgstr "Bạn có muốn xóa danh sách phát vĩnh viễn?"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:801
+msgid "Favourites+"
+msgstr "Thêm vào danh sách Yêu thích"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:832
+msgid "Added"
+msgstr "Đã thêm"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:861
+msgid "No playlists were found"
+msgstr "Không tìm thấy danh sách phát"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:882
+msgid "No playlists were added"
+msgstr "Không có danh sách phát nào được thêm"
+
+#: usr/lib/yuki-iptv/yuki_iptv/gui_playlists.py:883
+msgid "Please add your first playlist"
+msgstr "Vui lòng thêm danh sách phát đầu tiên của bạn"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:100
+msgid "Error applying filters"
+msgstr "Lỗi khi áp dụng bộ lọc"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:174
+msgid "&Exit"
+msgstr "&Thoát"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:258
+msgid "&Screenshot"
+msgstr "&Chụp màn hình"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:263
+msgid "&Postprocessing"
+msgstr "&Hậu xử lý"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:266
+msgid "&Deblock"
+msgstr "&Gỡ chặn"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:269
+msgid "De&ring"
+msgstr "&Giảm nhiễu"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:273
+msgid "Debanding (&gradfun)"
+msgstr "Giảm nhiễu sọc bằng Gradfun"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:277
+msgid "Add n&oise"
+msgstr "Thêm &tạp âm"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:280
+msgid "Add &black borders"
+msgstr "Thêm &viền đen"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:283
+msgid "Soft&ware scaling"
+msgstr "Phóng đại &bằng phần mềm"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:286
+msgid "&Autodetect phase"
+msgstr "&Tự động nhận diện pha"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:305
+msgid "&Extrastereo"
+msgstr "&Tăng cường âm thanh vòm"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:308
+msgid "&Karaoke"
+msgstr "&Karaoke"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:312
+msgid "&Headphone optimization"
+msgstr "&Tối ưu hóa tai nghe"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:316
+msgid "Volume &normalization"
+msgstr "&Chuẩn hóa âm lượng"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:353
+msgid "&Channel sort"
+msgstr "&Sắp xếp kênh"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:360
+msgid "&Settings"
+msgstr "&Cài đặt"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:370
+msgid "empty"
+msgstr "trống"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:418
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:179
+msgid "&File"
+msgstr "&Tệp"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:429
+msgid "&Play"
+msgstr "&Phát"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:439
+msgid "Speed"
+msgstr "Tốc độ"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:449
+msgid "&Video"
+msgstr "&Video"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:450
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:470
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:485
+msgid "&Track"
+msgstr "&Track"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:455
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:472
+msgid "F&ilters"
+msgstr "&Bộ lọc"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:469
+msgid "&Audio"
+msgstr "&Âm thanh"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:484
+msgid "&Subtitles"
+msgstr "&Phụ đề"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:490
+msgid "Vie&w"
+msgstr "&Xem"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:499
+msgid "&Options"
+msgstr "&Tùy chọn"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:507
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:512
+msgid "&Help"
+msgstr "&Trợ giúp"
+
+#: usr/lib/yuki-iptv/yuki_iptv/menubar.py:576
+msgid "None"
+msgstr "Không có"
+
+#: usr/lib/yuki-iptv/yuki_iptv/mpv_options.py:39
+msgid "Custom MPV options invalid, ignoring them"
+msgstr "Thiết lập tùy chỉnh MPV không hợp lệ, bỏ qua chúng"
+
+#: usr/lib/yuki-iptv/yuki_iptv/multiepg.py:91
+msgid "Previous day"
+msgstr "Ngày trước"
+
+#: usr/lib/yuki-iptv/yuki_iptv/multiepg.py:96
+msgid "Next day"
+msgstr "Ngày tiếp theo"
+
+#: usr/lib/yuki-iptv/yuki_iptv/multiepg.py:115
+msgid "Previous channels"
+msgstr "Kênh trước"
+
+#: usr/lib/yuki-iptv/yuki_iptv/multiepg.py:118
+msgid "Next channels"
+msgstr "Kênh tiếp theo"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist.py:90
+#: usr/lib/yuki-iptv/yuki_iptv/playlist.py:106
+#: usr/lib/yuki-iptv/yuki_iptv/qt.py:39
+msgid "yuki-iptv error"
+msgstr "yuki-iptv lỗi"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist.py:93
+msgid "Processing error"
+msgstr "Lỗi xử lý"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist.py:107
+msgid "Could not connect"
+msgstr "Không thể kết nối"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist.py:137
+#: usr/lib/yuki-iptv/yuki_iptv/playlist.py:208
+#: usr/lib/yuki-iptv/yuki_iptv/playlist.py:217
+msgid ""
+"Failed to load playlist - unknown encoding! Please use playlists in UTF-8 "
+"encoding."
+msgstr ""
+"Không thể tải danh sách phát - mã hóa không xác định! Vui lòng sử dụng danh "
+"sách phát ở định dạng UTF-8."
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist.py:226
+#: usr/lib/yuki-iptv/yuki_iptv/playlist.py:271
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:116
+msgid "Playlist loading error!"
+msgstr "Lỗi tải danh sách phát!"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:111
+msgid "loaded"
+msgstr "đã tải"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:153
+msgid "Save File"
+msgstr "Lưu tệp"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:153
+msgid "Playlists (*.m3u *.m3u8)"
+msgstr "Danh sách phát (*.m3u *.m3u8)"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:161
+msgid "Playlist successfully saved!"
+msgstr "Danh sách phát đã lưu thành công!"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:170
+msgid "&Open file"
+msgstr "&Mở tệp"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:174
+msgid "&Save as"
+msgstr "&Lưu thành"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:268
+msgid "find"
+msgstr "tìm"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:273
+msgid "replace with"
+msgstr "thay thế bằng"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:278
+msgid "replace all"
+msgstr "thay thế tất cả"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:286
+msgid "delete row"
+msgstr "xóa dòng"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:294
+msgid "add row"
+msgstr "thêm dòng"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:318
+msgid "filter group (press Enter)"
+msgstr "Nhóm bộ lọc (nhấn Enter)"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:322
+msgid ""
+"insert search term and press enter\n"
+" use Selector → to choose column to search"
+msgstr ""
+"Nhập từ khóa tìm kiếm và nhấn Enter, sử dụng Selector → để chọn cột cần tìm "
+"kiếm"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:376
+msgid "Playlist editor"
+msgstr "Sửa danh sách phát"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:386
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:412
+msgid "Ready"
+msgstr "Sẵn sàng"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:392
+msgid "Save Confirmation"
+msgstr "Xác nhận lưu"
+
+#: usr/lib/yuki-iptv/yuki_iptv/playlist_editor.py:394
+msgid "The document was changed.<br>Do you want to save the changes?"
+msgstr "Tài liệu đã thay đổi.<br>Bạn có muốn lưu các thay đổi?"
+
+#: usr/lib/yuki-iptv/yuki_iptv/record.py:89
+msgid "ffmpeg crashed!"
+msgstr "ffmpeg đã gặp sự cố!"
+
+#: usr/lib/yuki-iptv/yuki_iptv/record.py:90
+msgid "exit code:"
+msgstr "mã thoát:"
