@@ -1,0 +1,234 @@
+yuki-iptv (0.0.19) unstable; urgency=medium
+
+  * Update python-mpv
+  * l10n: Update translations
+  * Activate word wrap for QListWidgets
+  * Multi-EPG: add channel group filter
+  * Less transparency for fullscreen panels
+  * Add Enable transparency for floating panels option
+
+ -- liya <liyaliya@tutamail.com>  Mon, 16 Jun 2025 20:15:39 +0000
+
+yuki-iptv (0.0.18) unstable; urgency=medium
+
+  * Translations update from Codeberg Translate
+  * Show channel name in playlist dock
+  * Add size grip for fullscreen playlist
+
+ -- liya <liyaliya@tutamail.com>  Wed, 08 Jan 2025 21:10:39 +0000
+
+yuki-iptv (0.0.17) unstable; urgency=medium
+
+  * Playlist window refactoring
+  * Remove Wand dependency
+  * Set OSC type to slimbox
+  * Set vo to gpu-next,gpu,x11
+
+ -- liya <liyaliya@tutamail.com>  Fri, 20 Dec 2024 13:53:47 +0000
+
+yuki-iptv (0.0.16) unstable; urgency=medium
+
+  * Add Multi-EPG
+  * Add support for "Origin" HTTP header
+  * Better mpv options parsing
+  * Fix XTream crash with empty category id
+
+ -- liya <liyaliya@tutamail.com>  Fri, 06 Dec 2024 05:09:19 +0000
+
+yuki-iptv (0.0.15) unstable; urgency=medium
+
+  * Translations update from Codeberg Translate
+  * Fix exInMainThread_partial crash
+  * Remove unneeded player options
+  * Add Low latency mode option
+
+ -- liya <liyaliya@tutamail.com>  Wed, 23 Oct 2024 00:02:18 +0000
+
+yuki-iptv (0.0.14) unstable; urgency=medium
+
+  * l10n: Update translations
+  * Update XTream library
+  * Update python-mpv
+  * Remove support for Pillow
+  * Remove support for GNOME inhibit
+  * Remove support for hardware acceleration
+  * Fix XTream crash with empty category id
+  * Fix XTream crash when creating cache directory
+  * Disable styles redefinition
+  * Always enable catchup
+  * Async XTream series loading
+
+ -- liya <liyaliya@tutamail.com>  Sun, 06 Oct 2024 23:42:53 +0000
+
+yuki-iptv (0.0.13) unstable; urgency=medium
+
+  * l10n: Update translations
+  * debian/control: Move yt-dlp to recommends
+  * Add sorting for categories
+  * Show EPG description
+  * Show EPG percentage more precisely
+  * Drop Qt 5 support
+  * Add support for GNOME and org.freedesktop.ScreenSaver Inhibit
+
+ -- liya <liyaliya@tutamail.com>  Mon, 02 Sep 2024 22:30:06 +0000
+
+yuki-iptv (0.0.12) unstable; urgency=medium
+
+  * Translations update from Weblate
+  * Change record format to ts
+  * Load Qt system translations
+  * Add resize grip to playlist in separate window
+  * Add support for custom channel logos
+  * Better libmpv API version check
+
+ -- liya <liyaliya@tutamail.com>  Thu, 04 Jul 2024 19:30:08 +0000
+
+yuki-iptv (0.0.11) unstable; urgency=medium
+
+  * Translations update from Weblate
+  * libmpv 0.38.0 fixes
+  * Restore channel sorting
+  * More verbose exceptions
+  * Add "Floating panel position" - "Separate window" option
+  * Add option "Hide playlist by left mouse click"
+  * Fix "Bad paging"
+  * Fix "Jumpy label"
+  * Fix "No autoplay after Playing error"
+  * Fix "RuntimeError: wrapped C/C++ object of type QAction has been deleted"
+  * Fix "Wrong Qt version reported"
+  * Disable debug logging for MPRIS
+
+ -- liya <liyaliya@tutamail.com>  Fri, 19 Apr 2024 19:51:06 +0000
+
+yuki-iptv (0.0.10) unstable; urgency=medium
+
+  * Translations update from Weblate
+  * Show channel URL in stream information window
+  * Do not crash if save folder is not writable
+  * Fix aspect ratio in channel logos
+  * xspf: Add support for logos and VLC extensions
+  * Fix crash if EPG title is None
+  * Fix playing error not shown correctly in fullscreen mode
+  * Remove channel sorting
+  * Fix MPRIS
+  * Fix VOD matching
+  * Add EPG id for XTream channels
+
+ -- liya <liyaliya@tutamail.com>  Sun, 17 Mar 2024 12:37:31 +0000
+
+yuki-iptv (0.0.9) unstable; urgency=medium
+
+  * l10n: Update translations
+  * Respect XDG environment variables
+  * Fix YouTube channels recording
+  * Add file filter when adding playlist
+  * Add file filter when opening file in M3U editor
+
+ -- liya <liyaliya@tutamail.com>  Tue, 23 Jan 2024 04:13:28 +0000
+
+yuki-iptv (0.0.8) unstable; urgency=medium
+
+  * l10n: Update translations
+  * Fix parsing channel name with comma
+  * Show audio/video desynchronization
+  * Show group in channel tooltip
+  * Add ability to select EPG date
+  * Fix osc disabling via mpv options
+  * Fix crashing if save settings called when EPG is updating
+  * Fix page selection taking focus and blocking keybinds
+  * Fix crash in channel search
+  * Add rewind
+  * Add frame-step and frame-back-step commands
+  * Fix loading playlists with trailing spaces in URL
+  * Fix crashing in movies
+  * Fix requests timeout
+  * Fix changing playlist name when editing it
+  * Update XTream library
+  * Show XTream expiration dates in playlists window
+  * Fix catchup on XTream playlists
+  * Load EPG for XTream
+
+ -- liya <liyaliya@tutamail.com>  Tue, 07 Nov 2023 08:23:17 +0000
+
+yuki-iptv (0.0.7) unstable; urgency=medium
+
+  * Fix encoding in remote playlists
+  * Use Wand for channel logos
+  * Add tvg-group tag support
+
+ -- liya <liyaliya@tutamail.com>  Mon, 05 Jun 2023 22:30:31 +0000
+
+yuki-iptv (0.0.6) unstable; urgency=medium
+
+  * Add 'Hide EPG from playlist' option
+  * Add 'Multicast optimization' option
+  * Fix control panel not aware of multiple screens
+  * Detect group in xspf playlists
+  * Increase connect and read timeout
+
+ -- liya <liyaliya@tutamail.com>  Sun, 14 May 2023 20:53:12 +0000
+
+yuki-iptv (0.0.5) unstable; urgency=medium
+
+  * Load EPG for all days available
+
+ -- liya <liyaliya@tutamail.com>  Tue, 02 May 2023 05:56:35 +0000
+
+yuki-iptv (0.0.4) unstable; urgency=medium
+
+  * Optimize channel logos load
+  * Show warning if ffmpeg crashed
+  * Remember video / audio / subtitle tracks for channel
+  * Add subtitles selector
+  * Fix pause button behaviour on changing channels
+  * UI improvements
+  * packaging: add python3-pydbus to depends
+
+ -- liya <liyaliya@tutamail.com>  Sat, 15 Apr 2023 18:52:48 +0000
+
+yuki-iptv (0.0.3) unstable; urgency=medium
+
+  * EPG: trying to fix EPG cache load freezing
+  * EPG: fix XMLTV timezone parsing
+  * EPG: re-implement JTV support from scratch
+  * EPG: Add support for XMLTV inside zip archive
+  * Show Qt and libmpv versions in about window
+  * Add TV.ALL EPG format support
+  * Fix autoreconnection option
+  * Show logo when file ended
+  * Fix channel looping
+
+ -- liya <liyaliya@tutamail.com>  Sun, 09 Apr 2023 20:48:06 +0000
+
+yuki-iptv (0.0.2) unstable; urgency=medium
+
+  * l10n: Update translations
+  * Fix disabling osc via MPV options
+  * Make libmpv respect loglevel option
+  * Lazy load EPG cache
+  * Lazy load channel logos
+  * Fix crash if no TV channels found
+  * tv guide: add channel search
+  * scheduler: add channel search
+  * channel logos: respect useragent and referer when downloading
+  * settings: disable hardware acceleration and deinterlace by default
+  * Change default User-Agent to Mozilla/5.0
+  * Allow custom HTTP Referer for individual channels
+  * Allow custom user agent
+  * Verbose EPG loading
+  * Show channel name on changing in fullscreen mode
+  * Fix custom channel sort in multiple playlists with same channel name
+  * Fix favourites in multiple playlists with same channel name
+  * Fix channel settings in multiple playlists with same channel name
+  * Update pyxtream library
+  * Check playlist name is not empty before saving
+  * Drop default EPG URLs
+  * Drop import from Hypnotix
+
+ -- liya <liyaliya@tutamail.com>  Thu, 06 Apr 2023 18:29:16 +0000
+
+yuki-iptv (0.0.1) unstable; urgency=medium
+
+  * Change project name to yuki-iptv
+
+ -- liya <liyaliya@tutamail.com>  Mon, 27 Mar 2023 18:25:20 +0000

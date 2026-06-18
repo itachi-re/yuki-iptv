@@ -1,0 +1,29 @@
+Source: yuki-iptv
+Section: video
+Priority: optional
+Maintainer: liya <liyaliya@tutamail.com>
+Standards-Version: 4.6.2
+Build-Depends: debhelper-compat (= 13)
+Homepage: https://codeberg.org/liya/yuki-iptv
+Vcs-Git: https://codeberg.org/liya/yuki-iptv.git
+Vcs-Browser: https://codeberg.org/liya/yuki-iptv
+Rules-Requires-Root: no
+
+Package: yuki-iptv
+Architecture: all
+Depends: ffmpeg,
+         libmpv2,
+         python3 (>= 3.9~),
+         python3-gi,
+         python3-pyqt6,
+         python3-chardet,
+         python3-requests
+Description: IPTV player with EPG support
+ yuki-iptv is an IPTV player with many features, such as:
+  * M3U / XSPF playlists support
+  * XTream API support
+  * TV guide (EPG) support
+  * Stream recording
+  * Playlist editor
+  * TV archive / catchup
+  * ...
