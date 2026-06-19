@@ -1,0 +1,11 @@
+__pycache__
+usr/share/locale
+*.swo
+*.swp
+*.kate-swp
+.pytest_cache
+.ruff_cache
+debian/yuki-iptv
+debian/*debhelper*
+debian/files
+debian/yuki-iptv.substvars
