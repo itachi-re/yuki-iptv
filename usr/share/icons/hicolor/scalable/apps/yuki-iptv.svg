@@ -1,12 +1,165 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   viewBox="0 0 640 640"
-   xmlns="http://www.w3.org/2000/svg">
-  <!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) -->
-  <!-- Resized by liya -->
-  <path
-     fill="#0000ff"
-     d="M 592,0 H 48 A 48,60 0 0 0 0,60 v 400 a 48,60 0 0 0 48,60 h 240 v 40 H 112 a 16,20 0 0 0 -16,20 v 40 a 16,20 0 0 0 16,20 h 416 a 16,20 0 0 0 16,-20 V 580 A 16,20 0 0 0 528,560 H 352 v -40 h 240 a 48,60 0 0 0 48,-60 V 60 A 48,60 0 0 0 592,0 Z M 576,440 H 64 V 80 h 512 z"
-     id="path2"
-     style="stroke-width:1.11803" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="256" y1="0" x2="256" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1c3d72"/>
+      <stop offset="42%" stop-color="#132c55"/>
+      <stop offset="100%" stop-color="#09182C"/>
+    </linearGradient>
+
+    <radialGradient id="frostBloom" cx="256" cy="250" r="240" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#9FE8FF" stop-opacity="0.22"/>
+      <stop offset="28%" stop-color="#3DAEE9" stop-opacity="0.08"/>
+      <stop offset="60%" stop-color="#183568" stop-opacity="0.02"/>
+      <stop offset="100%" stop-color="#09182C" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="centerGlow" cx="256" cy="256" r="52" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#DFF2FF" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#DFF2FF" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="hexFill" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#DFF2FF"/>
+      <stop offset="100%" stop-color="#B0E4FF"/>
+    </radialGradient>
+
+    <filter id="snowGlow" x="-28%" y="-28%" width="156%" height="156%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="arcSoft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3.5"/>
+    </filter>
+
+    <filter id="particleSoft" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0.8"/>
+    </filter>
+
+    <linearGradient id="glass" x1="256" y1="0" x2="256" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.095"/>
+      <stop offset="15%" stop-color="#ffffff" stop-opacity="0.03"/>
+      <stop offset="70%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.045"/>
+    </linearGradient>
+
+    <linearGradient id="edgeLight" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#9FE8FF" stop-opacity="0.055"/>
+      <stop offset="30%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="70%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#3DAEE9" stop-opacity="0.04"/>
+    </linearGradient>
+
+    <linearGradient id="topSheen" x1="256" y1="0" x2="256" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <clipPath id="clip">
+      <rect width="512" height="512" rx="72"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="72" fill="url(#bg)"/>
+
+  <g clip-path="url(#clip)">
+
+    <!-- Frost bloom illumination -->
+    <rect width="512" height="512" fill="url(#frostBloom)"/>
+
+    <!-- Center inner glow -->
+    <circle cx="256" cy="256" r="52" fill="url(#centerGlow)"/>
+
+    <!-- Broadcast signal arcs -->
+    <g filter="url(#arcSoft)" fill="none" stroke="#9FE8FF" stroke-linecap="round" transform="rotate(-38,256,256)">
+      <circle cx="256" cy="256" r="108" stroke-width="2.4" stroke-opacity="0.14" stroke-dasharray="530 149"/>
+      <circle cx="256" cy="256" r="140" stroke-width="1.9" stroke-opacity="0.085" stroke-dasharray="687 193"/>
+      <circle cx="256" cy="256" r="174" stroke-width="1.4" stroke-opacity="0.045" stroke-dasharray="854 238"/>
+    </g>
+
+    <!-- Snowflake with glow -->
+    <g transform="translate(256,256)" filter="url(#snowGlow)">
+
+      <!-- Single arm definition -->
+      <g id="arm">
+        <!-- Main shaft -->
+        <line x1="0" y1="-15" x2="0" y2="-180" stroke="#DFF2FF" stroke-width="5" stroke-linecap="round"/>
+
+        <!-- Primary branch pair at 60° — ~36% from center -->
+        <line x1="0" y1="-66" x2="-29" y2="-83" stroke="#DFF2FF" stroke-width="3.8" stroke-linecap="round"/>
+        <line x1="0" y1="-66" x2="29" y2="-83" stroke="#DFF2FF" stroke-width="3.8" stroke-linecap="round"/>
+
+        <!-- Sub-branches (parallel to c-axis crystal growth) -->
+        <line x1="-29" y1="-83" x2="-29" y2="-98" stroke="#DFF2FF" stroke-width="2.8" stroke-linecap="round"/>
+        <line x1="29" y1="-83" x2="29" y2="-98" stroke="#DFF2FF" stroke-width="2.8" stroke-linecap="round"/>
+
+        <!-- Secondary branch pair at 60° — ~64% from center -->
+        <line x1="0" y1="-116" x2="-24" y2="-130" stroke="#DFF2FF" stroke-width="3.2" stroke-linecap="round"/>
+        <line x1="0" y1="-116" x2="24" y2="-130" stroke="#DFF2FF" stroke-width="3.2" stroke-linecap="round"/>
+
+        <!-- Secondary sub-branches -->
+        <line x1="-24" y1="-130" x2="-24" y2="-141" stroke="#DFF2FF" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="24" y1="-130" x2="24" y2="-141" stroke="#DFF2FF" stroke-width="2.2" stroke-linecap="round"/>
+
+        <!-- Tip fork at 30° divergence -->
+        <line x1="0" y1="-168" x2="-6" y2="-179" stroke="#DFF2FF" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="0" y1="-168" x2="6" y2="-179" stroke="#DFF2FF" stroke-width="2.5" stroke-linecap="round"/>
+      </g>
+
+      <!-- 6-fold symmetry -->
+      <use href="#arm"/>
+      <use href="#arm" transform="rotate(60)"/>
+      <use href="#arm" transform="rotate(120)"/>
+      <use href="#arm" transform="rotate(180)"/>
+      <use href="#arm" transform="rotate(240)"/>
+      <use href="#arm" transform="rotate(300)"/>
+
+      <!-- Central hexagonal hub -->
+      <polygon points="0,-15 13,-7.5 13,7.5 0,15 -13,7.5 -13,-7.5" fill="url(#hexFill)" fill-opacity="0.88"/>
+
+      <!-- Center crystal highlight -->
+      <circle r="3.2" fill="#9FE8FF" opacity="0.6"/>
+      <circle r="1.2" fill="#DFF2FF" opacity="0.9"/>
+    </g>
+
+    <!-- Floating frost particles -->
+    <g fill="#DFF2FF" filter="url(#particleSoft)">
+      <circle cx="112" cy="132" r="1.4" opacity="0.30"/>
+      <circle cx="390" cy="108" r="1.0" opacity="0.25"/>
+      <circle cx="82" cy="308" r="1.2" opacity="0.20"/>
+      <circle cx="422" cy="338" r="1.5" opacity="0.18"/>
+      <circle cx="148" cy="420" r="1.0" opacity="0.14"/>
+      <circle cx="355" cy="435" r="1.2" opacity="0.17"/>
+      <circle cx="72" cy="192" r="0.8" opacity="0.22"/>
+      <circle cx="438" cy="222" r="1.0" opacity="0.16"/>
+      <circle cx="192" cy="90" r="1.1" opacity="0.20"/>
+      <circle cx="325" cy="82" r="0.9" opacity="0.22"/>
+      <circle cx="132" cy="382" r="1.0" opacity="0.14"/>
+      <circle cx="382" cy="395" r="0.8" opacity="0.17"/>
+      <circle cx="78" cy="255" r="0.9" opacity="0.12"/>
+      <circle cx="434" cy="268" r="1.1" opacity="0.13"/>
+      <circle cx="168" cy="68" r="0.7" opacity="0.18"/>
+      <circle cx="402" cy="155" r="0.8" opacity="0.15"/>
+    </g>
+
+    <!-- Liquid glass overlay -->
+    <rect width="512" height="512" fill="url(#glass)"/>
+
+    <!-- Diagonal edge refraction -->
+    <rect width="512" height="512" fill="url(#edgeLight)"/>
+
+    <!-- Top specular sheen -->
+    <rect width="512" height="180" fill="url(#topSheen)" rx="72"/>
+
+    <!-- Focused specular highlight -->
+    <ellipse cx="232" cy="48" rx="165" ry="16" fill="#ffffff" opacity="0.028"/>
+
+  </g>
+
+  <!-- Refined border -->
+  <rect width="512" height="512" rx="72" fill="none" stroke="#ffffff" stroke-opacity="0.04" stroke-width="0.75"/>
 </svg>
