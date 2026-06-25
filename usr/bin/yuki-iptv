@@ -1,3 +1,3 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
 exec python3 "$(dirname "$(realpath "$0")")/../lib/yuki-iptv/yuki-iptv.py" "$@"
 exit "$?"
