@@ -1,0 +1,265 @@
+# .github/workflows/release.yml
+#
+# Triggers:
+#   git tag v260626.0 && git push origin v260626.0
+#   — or — manually via GitHub Actions UI (workflow_dispatch),
+#            supplying the existing tag name.
+#
+# What it does, end to end:
+#   1. Resolves RELEASE_TAG from either the pushed tag or the manual input.
+#   2. Creates a draft GitHub Release for the tag (--verify-tag ensures the
+#      tag actually exists before anything else runs).
+#   3. Tells OBS to re-run its source service so it fetches the new
+#      @PARENT_TAG@ and rebuilds.  Skip if you already have a GitHub webhook
+#      on OBS's Triggers tab — the step is no-op when OBS_TRIGGER_TOKEN is
+#      absent anyway.
+#   4. Polls OBS until the build for *this exact tag* succeeds.
+#   5. Downloads the resulting RPMs directly from the OBS build backend
+#      (no mirror-sync delay).
+#   6. Verifies payload integrity of every RPM (no signing key required).
+#   7. Generates SHA256SUMS and uploads everything to the release.
+#   8. Un-drafts the release.
+#   9. If anything fails, deletes the draft so you're never left with a
+#      half-finished release.
+#
+# Secrets (Settings → Secrets and variables → Actions):
+#   OBS_TRIGGER_TOKEN   Recommended.  Create with:
+#                         osc token --create home:itachi_re yuki-iptv
+#                       or via the package's Triggers tab on
+#                       build.opensuse.org.  If absent, step 3 is skipped;
+#                       you must trigger the rebuild some other way first.
+#   OBS_USER            Optional.  home: projects are public, so anonymous
+#   OBS_PASSWORD        reads normally work.  Add only if OBS returns 401s.
+#
+# No additional secret is needed for the GitHub Release; the built-in
+# GITHUB_TOKEN covers that.
+
+name: Release & Publish (OBS)
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to re-release (e.g. v260626.0)"
+        required: true
+
+permissions:
+  contents: write
+
+# One run per tag at a time; a second push to the same tag cancels the
+# previous run rather than racing it.
+concurrency:
+  group: release-${{ github.event.inputs.tag || github.ref_name }}
+  cancel-in-progress: true
+
+env:
+  # Single source of truth for the tag name used everywhere below.
+  # On a tag push  : github.ref_name  = "v260626.0"
+  # On workflow_dispatch: github.event.inputs.tag = "v260626.0"
+  #                       github.ref_name          = "main"  ← wrong; don't use
+  RELEASE_TAG: ${{ github.event.inputs.tag || github.ref_name }}
+
+  OBS_PROJECT:    "home:itachi_re"
+  OBS_PACKAGE:    "yuki-iptv"
+  OBS_REPOSITORY: "openSUSE_Tumbleweed"
+  OBS_ARCH:       "x86_64"   # noarch RPMs are published under this build job
+  OBS_API:        "https://api.opensuse.org"
+  POLL_INTERVAL:  30         # seconds between status checks
+  POLL_TIMEOUT:   3600       # give up after this many seconds
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      # ── 1. Checkout ──────────────────────────────────────────────────────
+      # fetch-tags: true ensures the tag is present locally even when the
+      # workflow was triggered manually (workflow_dispatch checks out the
+      # branch, not the tag, by default).
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-tags: true
+          fetch-depth: 0
+
+      # ── 2. Create draft GitHub Release ───────────────────────────────────
+      # --verify-tag: gh refuses to create the release if the supplied tag
+      # does not exist in the repo.  This catches workflow_dispatch typos
+      # before any OBS work is done.
+      - name: Create draft GitHub Release
+        run: |
+          set -euo pipefail
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "Release $RELEASE_TAG already exists — reusing it."
+          else
+            gh release create "$RELEASE_TAG" \
+              --title "$RELEASE_TAG" \
+              --generate-notes \
+              --verify-tag \
+              --draft
+          fi
+
+      # ── 3. Trigger OBS rebuild ────────────────────────────────────────────
+      # Skipped entirely when OBS_TRIGGER_TOKEN is not set.
+      - name: Trigger OBS rebuild
+        if: ${{ secrets.OBS_TRIGGER_TOKEN != '' }}
+        env:
+          OBS_TRIGGER_TOKEN: ${{ secrets.OBS_TRIGGER_TOKEN }}
+        run: |
+          set -euo pipefail
+          curl -sf \
+            --retry 10 --retry-delay 5 --retry-all-errors \
+            -X POST \
+            -H "Authorization: Token ${OBS_TRIGGER_TOKEN}" \
+            "${OBS_API}/trigger/runservice?project=${OBS_PROJECT}&package=${OBS_PACKAGE}"
+          echo "Triggered source-service re-run for ${OBS_PROJECT}/${OBS_PACKAGE}"
+
+      # ── 4 & 5. Wait for OBS, then download RPMs ──────────────────────────
+      - name: Wait for OBS build and download RPMs
+        env:
+          OBS_USER:     ${{ secrets.OBS_USER }}
+          OBS_PASSWORD: ${{ secrets.OBS_PASSWORD }}
+        run: |
+          set -euo pipefail
+          mkdir -p rpms
+
+          # Build optional auth array once; reused in every curl call below.
+          CURL_AUTH=()
+          if [ -n "${OBS_USER:-}" ]; then
+            CURL_AUTH=(-u "${OBS_USER}:${OBS_PASSWORD}")
+          fi
+
+          RESULT_URL="${OBS_API}/build/${OBS_PROJECT}/_result?package=${OBS_PACKAGE}"
+          LIST_URL="${OBS_API}/build/${OBS_PROJECT}/${OBS_REPOSITORY}/${OBS_ARCH}/${OBS_PACKAGE}"
+
+          elapsed=0
+          ready=""
+
+          while [ "$elapsed" -lt "$POLL_TIMEOUT" ]; do
+
+            # Fetch current build result.  --retry-all-errors handles
+            # transient 5xx responses from OBS under load.
+            curl -sf \
+              --retry 5 --retry-delay 5 --retry-all-errors \
+              "${CURL_AUTH[@]}" \
+              -H "Accept: application/xml" \
+              "$RESULT_URL" -o result.xml
+
+            code=$(python3 - "$OBS_REPOSITORY" "$OBS_ARCH" "result.xml" <<'PYEOF'
+import sys, xml.etree.ElementTree as ET
+repo, arch, path = sys.argv[1], sys.argv[2], sys.argv[3]
+root = ET.parse(path).getroot()
+code = ""
+for r in root.findall("result"):
+    if r.get("repository") == repo and r.get("arch") == arch:
+        s = r.find("status")
+        code = s.get("code") if s is not None else ""
+        break
+print(code)
+PYEOF
+)
+
+            echo "OBS status for ${OBS_PACKAGE}: ${code:-unknown}  [${elapsed}s elapsed]"
+
+            case "$code" in
+              failed|broken|unresolvable)
+                echo "::error::OBS build '${code}' for ${OBS_PACKAGE}." \
+                     "See https://build.opensuse.org/package/show/${OBS_PROJECT}/${OBS_PACKAGE}"
+                exit 1
+                ;;
+
+              succeeded)
+                curl -sf \
+                  --retry 5 --retry-delay 5 --retry-all-errors \
+                  "${CURL_AUTH[@]}" \
+                  -H "Accept: application/xml" \
+                  "$LIST_URL" -o binarylist.xml
+
+                # Strip the leading 'v' from the tag before building the
+                # needle.  RPM Version fields never carry the 'v' prefix, so
+                # tag "v260626.0" produces filenames like
+                # "yuki-iptv-260626.0-1.1.noarch.rpm", not
+                # "yuki-iptv-v260626.0-1.1.noarch.rpm".
+                mapfile -t FILES < <(python3 - "$OBS_PACKAGE" "$RELEASE_TAG" "binarylist.xml" <<'PYEOF'
+import sys, xml.etree.ElementTree as ET
+pkg, tag, path = sys.argv[1], sys.argv[2], sys.argv[3]
+root = ET.parse(path).getroot()
+needle = f"-{tag.lstrip('v')}-"
+for b in root.findall("binary"):
+    name = b.get("filename", "")
+    if (name.startswith(pkg)
+            and needle in name
+            and name.endswith(".rpm")
+            and "debuginfo" not in name
+            and "debugsource" not in name):
+        print(name)
+PYEOF
+)
+
+                if [ "${#FILES[@]}" -gt 0 ]; then
+                  ready="yes"
+                  break
+                fi
+                # 'succeeded' but no filenames matched this tag yet: OBS is
+                # still reporting the previous build's result.  Keep polling.
+                ;;
+            esac
+
+            sleep "$POLL_INTERVAL"
+            elapsed=$((elapsed + POLL_INTERVAL))
+          done
+
+          if [ -z "$ready" ]; then
+            echo "::error::Timed out after ${POLL_TIMEOUT}s waiting for" \
+                 "OBS to publish ${RELEASE_TAG} artifacts."
+            exit 1
+          fi
+
+          for f in "${FILES[@]}"; do
+            echo "Downloading ${f}"
+            curl -sf \
+              --retry 5 --retry-delay 5 --retry-all-errors \
+              "${CURL_AUTH[@]}" \
+              "$LIST_URL/$f" -o "rpms/$f"
+          done
+
+          echo "--- downloaded files ---"
+          ls -la rpms/
+
+      # ── 6. Verify RPM payload integrity ──────────────────────────────────
+      # --nosignature skips GPG verification (the OBS signing key is not
+      # imported on the runner).  The digest check still confirms that no
+      # file was truncated or corrupted in transit.
+      - name: Verify RPM integrity
+        run: |
+          set -euo pipefail
+          rpm -K --nosignature rpms/*.rpm
+
+      # ── 7. Generate checksums ─────────────────────────────────────────────
+      - name: Generate checksums
+        run: |
+          set -euo pipefail
+          cd rpms
+          sha256sum *.rpm > SHA256SUMS
+          cat SHA256SUMS
+
+      # ── 8. Upload & publish ───────────────────────────────────────────────
+      - name: Upload RPMs and publish release
+        run: |
+          set -euo pipefail
+          gh release upload "$RELEASE_TAG" rpms/*.rpm rpms/SHA256SUMS --clobber
+          gh release edit "$RELEASE_TAG" --draft=false
+          echo "Published: $(gh release view "$RELEASE_TAG" --json url -q .url)"
+
+      # ── 9. Clean up on failure ────────────────────────────────────────────
+      # Deletes the draft if any earlier step failed, so the repository is
+      # never left with a dangling half-finished release.
+      - name: Delete draft release on failure
+        if: failure()
+        run: gh release delete "$RELEASE_TAG" --yes || true
