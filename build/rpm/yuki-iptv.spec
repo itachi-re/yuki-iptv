@@ -26,11 +26,10 @@ BuildRequires:  desktop-file-utils
 BuildRequires:  gettext-tools
 BuildRequires:  hicolor-icon-theme
 BuildRequires:  python3-base
+BuildRequires:  fdupes
 BuildArch:      noarch
 
 Requires:       ffmpeg
-Requires:       hicolor-icon-theme
-Requires:       libmpv2
 Requires:       python3 >= 3.11
 Requires:       python3-PyQt6
 Requires:       python3-chardet
@@ -82,22 +81,14 @@ cp -a usr/share/%{name}/icons_dark %{buildroot}%{_datadir}/%{name}/
 
 mkdir -p %{buildroot}%{_datadir}/locale
 cp -a usr/share/locale/. %{buildroot}%{_datadir}/locale/
-
 %find_lang %{name}
+%fdupes %{buildroot}%{_datadir}/%{name}
 
 %check
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 python3 -m py_compile usr/lib/%{name}/%{name}.py \
     usr/lib/%{name}/yuki_iptv/*.py \
     usr/lib/%{name}/thirdparty/*.py
-
-%post
-%desktop_database_post
-%icon_theme_cache_post
-
-%postun
-%desktop_database_postun
-%icon_theme_cache_postun
 
 %files
 %license COPYING LICENSE-CC-BY-4.0.txt LICENSE-NOTICE.txt
@@ -108,4 +99,29 @@ python3 -m py_compile usr/lib/%{name}/%{name}.py \
 %{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
 %{_datadir}/%{name}/
 
+%files lang -f %{name}.lang
+
 %changelog
+-------------------------------------------------------------------
+Thu Jun 25 20:37:38 UTC 2026 - itachi-re@suse.org
+
+- Update to version v260625.0:
+  * feat: add rpm spec file
+  * style: replace legacy icon with snowflake branding
+  * Rename openSUSE packaging directory to rpm
+  * remove dups
+  * feat(usr/share/yuki-iptv/icons_dark): add volume.png
+  * feat(usr/share/yuki-iptv/icons_dark): add volume-low.png
+  * feat(usr/share/yuki-iptv/icons_dark): add video.png
+  * feat(usr/share/yuki-iptv/icons_dark): add update.png
+  * feat(usr/share/yuki-iptv/icons_dark): add tvguide.png
+  * feat(usr/share/yuki-iptv/icons_dark): add tv.png
+
+-------------------------------------------------------------------
+Thu Jun 25 20:35:58 UTC 2026 - itachi re <xanbenson99@gmail.com>
+
+- Initial package.
+- Add gettext translation support.
+- Split translations into a separate -lang package.
+- Deduplicate identical icon assets with %fdupes.
+- Fix launcher shebang for correct RPM dependency generation.

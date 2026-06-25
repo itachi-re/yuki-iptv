@@ -1,0 +1,8 @@
+-------------------------------------------------------------------
+Thu Jun 25 20:35:58 UTC 2026 - itachi re <xanbenson99@gmail.com>
+
+- Initial package.
+- Add gettext translation support.
+- Split translations into a separate -lang package.
+- Deduplicate identical icon assets with %fdupes.
+- Fix launcher shebang for correct RPM dependency generation.

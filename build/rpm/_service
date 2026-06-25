@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services>
+  <service name="obs_scm">
+    <param name="url">https://github.com/itachi-re/yuki-iptv.git</param>
+    <param name="scm">git</param>
+    <param name="revision">@PARENT_TAG@</param>
+    <param name="filename">yuki-iptv</param>
+    <param name="versionformat">@PARENT_TAG@</param>
+    <param name="changesgenerate">enable</param>
+    <param name="changesauthor">itachi-re@suse.org</param>
+  </service>
+  <service name="set_version"/>
+  <service name="download_files"/>
+  <service name="tar" mode="buildtime"/>
+  <service name="recompress" mode="buildtime">
+    <param name="file">*.tar</param>
+    <param name="compression">zst</param>
+  </service>
+</services>
