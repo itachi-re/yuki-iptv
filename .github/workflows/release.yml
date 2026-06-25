@@ -148,13 +148,28 @@ jobs:
 
           while [ "$elapsed" -lt "$POLL_TIMEOUT" ]; do
 
-            # Fetch current build result.  --retry-all-errors handles
-            # transient 5xx responses from OBS under load.
-            curl -sf \
+            # Fetch current build result.
+            # -sS: silent progress but still print curl errors to stderr.
+            # -w "%{http_code}": appends the HTTP status to stdout (body goes
+            #   to -o, so stdout only carries the status code).
+            # || true: prevents set -e from aborting before the diagnostic
+            #   block below can print.
+            echo ">>> GET ${RESULT_URL}"
+            RESULT_HTTP=$(curl -sS \
               --retry 5 --retry-delay 5 --retry-all-errors \
               "${CURL_AUTH[@]}" \
               -H "Accept: application/xml" \
-              "$RESULT_URL" -o result.xml
+              -w "%{http_code}" \
+              -o result.xml \
+              "$RESULT_URL" || true)
+            echo "HTTP: ${RESULT_HTTP}"
+            echo "----- result.xml -----"
+            cat result.xml 2>/dev/null || echo "(empty / not written)"
+            echo "----------------------"
+            if [ "$RESULT_HTTP" != "200" ]; then
+              echo "::error::RESULT_URL returned HTTP ${RESULT_HTTP} — giving up."
+              exit 1
+            fi
 
             code=$(python3 - "$OBS_REPOSITORY" "$OBS_ARCH" "result.xml" <<'PYEOF'
           import sys, xml.etree.ElementTree as ET
@@ -180,17 +195,24 @@ jobs:
                 ;;
 
               succeeded)
-                # OBS normally exposes noarch RPMs under the x86_64 build job,
-                # but some packages publish under a dedicated noarch job instead.
-                # Try x86_64 first; fall back to noarch if the response is empty
-                # (a 200 with an empty <binarylist/>) or a 404.
+                # ── Fetch binary list: try x86_64, fall back to noarch ─────
+                # Diagnostic mode: always print URL, HTTP code, and raw body so
+                # we can see exactly what OBS returns for each path.
                 ACTIVE_LIST_URL="$LIST_URL"
-                http_code=$(curl -sf \
+
+                echo ">>> GET ${LIST_URL}  (x86_64 path)"
+                X86_HTTP=$(curl -sS \
                   --retry 5 --retry-delay 5 --retry-all-errors \
                   "${CURL_AUTH[@]}" \
                   -H "Accept: application/xml" \
                   -w "%{http_code}" \
-                  "$LIST_URL" -o binarylist.xml 2>/dev/null || echo "000")
+                  -o binarylist.xml \
+                  "$LIST_URL" || true)
+                echo "HTTP: ${X86_HTTP}"
+                echo "----- binarylist.xml (x86_64) -----"
+                cat binarylist.xml 2>/dev/null || echo "(empty / not written)"
+                echo "-----------------------------------"
+
                 binary_count=$(python3 -c "
           import xml.etree.ElementTree as ET
           try:
@@ -198,14 +220,27 @@ jobs:
           except Exception:
               print(0)
           " 2>/dev/null || echo 0)
-                if [ "$http_code" != "200" ] || [ "$binary_count" -eq 0 ]; then
+                echo "Binaries found at x86_64 path: ${binary_count}"
+
+                if [ "$X86_HTTP" != "200" ] || [ "$binary_count" -eq 0 ]; then
                   NOARCH_LIST_URL="${OBS_API}/build/${OBS_PROJECT}/${OBS_REPOSITORY}/noarch/${OBS_PACKAGE}"
-                  echo "x86_64 list empty or unavailable (HTTP ${http_code}, ${binary_count} binaries) — trying noarch URL: ${NOARCH_LIST_URL}"
-                  curl -sf \
+                  echo "x86_64 path unusable (HTTP ${X86_HTTP}, ${binary_count} binaries) — trying noarch path."
+                  echo ">>> GET ${NOARCH_LIST_URL}  (noarch path)"
+                  NOARCH_HTTP=$(curl -sS \
                     --retry 5 --retry-delay 5 --retry-all-errors \
                     "${CURL_AUTH[@]}" \
                     -H "Accept: application/xml" \
-                    "$NOARCH_LIST_URL" -o binarylist.xml
+                    -w "%{http_code}" \
+                    -o binarylist.xml \
+                    "$NOARCH_LIST_URL" || true)
+                  echo "HTTP: ${NOARCH_HTTP}"
+                  echo "----- binarylist.xml (noarch) -----"
+                  cat binarylist.xml 2>/dev/null || echo "(empty / not written)"
+                  echo "----------------------------------"
+                  if [ "$NOARCH_HTTP" != "200" ]; then
+                    echo "::error::Both x86_64 (HTTP ${X86_HTTP}) and noarch (HTTP ${NOARCH_HTTP}) paths failed."
+                    exit 1
+                  fi
                   ACTIVE_LIST_URL="$NOARCH_LIST_URL"
                 fi
                 echo "Using binary list URL: ${ACTIVE_LIST_URL}"
@@ -273,11 +308,22 @@ jobs:
           fi
 
           for f in "${FILES[@]}"; do
-            echo "Downloading ${f}"
-            curl -sf \
+            DL_URL="${ACTIVE_LIST_URL}/${f}"
+            echo ">>> GET ${DL_URL}"
+            DL_HTTP=$(curl -sS \
               --retry 5 --retry-delay 5 --retry-all-errors \
               "${CURL_AUTH[@]}" \
-              "$ACTIVE_LIST_URL/$f" -o "rpms/$f"
+              -w "%{http_code}" \
+              -o "rpms/$f" \
+              "$DL_URL" || true)
+            echo "HTTP: ${DL_HTTP}  →  rpms/${f}"
+            if [ "$DL_HTTP" != "200" ]; then
+              echo "::error::Download of ${f} returned HTTP ${DL_HTTP}"
+              echo "----- response body -----"
+              cat "rpms/$f" 2>/dev/null || echo "(empty)"
+              echo "-------------------------"
+              exit 1
+            fi
           done
 
           echo "--- downloaded files ---"
