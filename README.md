@@ -1,66 +1,131 @@
-# yuki-iptv
+<div align="center">
 
-IPTV player with EPG support — a community-maintained continuation of the original **yuki-iptv** project.
+# 📺 yuki-iptv
 
-## ⚠️ Project status
+**IPTV player with EPG support**
+Community-maintained continuation of the original [liya/yuki-iptv](https://codeberg.org/liya/yuki-iptv)
 
-The original upstream repository, [`liya/yuki-iptv`](https://codeberg.org/liya/yuki-iptv) on Codeberg, has been **archived by its maintainer** and is no longer being actively developed. This repository is an independent, unofficial continuation, starting from upstream's final commit (`72a32225be`, the last commit before the repository was archived on 2025-08-27) and maintained here going forward.
+[![Build Status](https://build.opensuse.org/projects/home:itachi_re/packages/yuki-iptv/badge.svg?type=default)](https://build.opensuse.org/package/show/home:itachi_re/yuki-iptv)
+[![GitHub Release](https://img.shields.io/github/v/release/itachi-re/yuki-iptv)](https://github.com/itachi-re/yuki-iptv/releases)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](./COPYING)
+[![Platform](https://img.shields.io/badge/platform-Linux-lightgrey?logo=linux)](https://github.com/itachi-re/yuki-iptv)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
+[![GitHub Issues](https://img.shields.io/github/issues/itachi-re/yuki-iptv)](https://github.com/itachi-re/yuki-iptv/issues)
+[![Last Commit](https://img.shields.io/github/last-commit/itachi-re/yuki-iptv)](https://github.com/itachi-re/yuki-iptv/commits)
 
-The full original commit history is still readable directly at the link above for anyone who wants to trace this fork's lineage back to the source.
+</div>
 
-> **A note on trust:** this project's name has previously been targeted by lookalike forks bundling unrelated or malicious code. Before installing from anywhere, check that the commit history traces back cleanly to a known source, and prefer release artifacts published directly from this repository over random third-party mirrors.
+---
 
-## Features
+## ⚠️ Project Status
 
-- M3U / M3U8 / XSPF playlist support
-- XTream API support
-- Unencrypted UDP (multicast), HTTP, and HLS (M3U8) stream playback
-- TV guide / EPG support (XMLTV and JTV formats)
-- Save channels as favorites
-- Stream recording
-- Hotkeys and channel search
-- Technical info overlay (video/audio codec, bitrate, resolution)
-- Channel groups (from playlist and custom)
-- Hide channels
-- Per-channel video settings (contrast, brightness, hue, saturation, gamma)
-- Per-channel user agent / HTTP Referer override
-- Built-in playlist editor
-- TV archive / catchup support
-- MPRIS support (media keys / desktop integration)
-- ...and more — check the commit history for ongoing additions
+> **🧪 Early Testing Phase — Expect Bugs**
+>
+> This fork is in its **early stages**. Core functionality works, but rough edges exist and things may break between releases. Bug reports are not just tolerated — they are actively helpful. If something doesn't work, please [open an issue](https://github.com/itachi-re/yuki-iptv/issues).
 
-⚠️ **Disclaimer:** yuki-iptv does not provide, host, or bundle any content, playlists, or TV channels. It is a player only. Any channels shown in screenshots are for demonstration purposes only.
+The original upstream repository, [`liya/yuki-iptv`](https://codeberg.org/liya/yuki-iptv) on Codeberg, was **archived by its maintainer** and is no longer being actively developed. This repository is an independent, unofficial continuation starting from upstream's final commit (`72a32225be`, archived on 2025-08-27) and is maintained here going forward.
 
-## Installation
+The full original commit history remains readable at the link above for anyone tracing this fork's lineage.
 
-This project currently targets Debian-based Linux distributions primarily.
+> **🔒 A note on trust:** this project's name has previously been targeted by lookalike forks bundling malicious code. Before installing from anywhere, verify the commit history traces cleanly back to a known source, and prefer release artifacts published directly from **this repository** over random third-party mirrors.
 
-- **Debian/Ubuntu:** build the `.deb` package using `debian/` (e.g. `create-release-deb.sh`), or check this repo's Releases page for a prebuilt package once one exists.
-- **Other distros:** there's no RPM packaging in this source tree (it was dropped upstream before this fork's starting commit) — install from source for now, or contribute packaging if you'd like to add it back.
-- **Dependencies:** see `debian/control` for the authoritative list. At minimum you'll need Python 3, PyQt, and `mpv`. Note that `usr/lib/yuki-iptv/thirdparty/` vendors a couple of third-party libraries directly (`mpv.py`, `xtream.py`) rather than pulling them in via pip.
+---
 
-### Running from source
+## ✨ Features
+
+| Category | Features |
+|---|---|
+| **Playlists** | M3U / M3U8 / XSPF, XTream API |
+| **Streams** | UDP multicast, HTTP, HLS (M3U8) |
+| **Guide** | EPG via XMLTV and JTV formats |
+| **Recording** | Stream recording with hotkeys |
+| **Customization** | Per-channel video settings, user agent / Referer override |
+| **Integration** | MPRIS support (media keys, desktop) |
+| **VOD / Series** | Group-based movie/series organisation |
+| **UI** | Channel search, favorites, groups, hide channels, tech info overlay |
+
+> ⚠️ **Disclaimer:** yuki-iptv does not provide, host, or bundle any content, playlists, or TV channels. It is a player only. Channels shown in screenshots are for demonstration purposes only.
+
+---
+
+## 📦 Installation
+
+### 🦎 openSUSE Tumbleweed (OBS — Recommended)
+
+Packages are built and published via the [Open Build Service](https://build.opensuse.org/package/show/home:itachi_re/yuki-iptv).
+
+> **🧪 Note:** OBS packages are currently in the testing phase. The build may occasionally be broken or behind. Check the build badge at the top of this page before installing.
+
+**One-time repository setup:**
+
+```bash
+sudo zypper addrepo \
+  https://download.opensuse.org/repositories/home:/itachi_re/openSUSE_Tumbleweed/home:itachi_re.repo
+sudo zypper refresh
+```
+
+**Install:**
+
+```bash
+sudo zypper install yuki-iptv
+```
+
+**Update (after a new release):**
+
+```bash
+sudo zypper refresh && sudo zypper update yuki-iptv
+```
+
+**Remove repository when no longer needed:**
+
+```bash
+sudo zypper removerepo home_itachi_re
+```
+
+Alternatively, install via YaST → Software Repositories → Add → Community Repositories, and search for `home:itachi_re`.
+
+---
+
+### 🔧 Running from Source
 
 ```bash
 git clone https://github.com/itachi-re/yuki-iptv.git
 cd yuki-iptv
-# install the dependencies listed in debian/control first
+# Install dependencies listed in debian/control first
+# At minimum: Python 3, PyQt, mpv
 python3 usr/lib/yuki-iptv/yuki-iptv.py
 ```
 
-If the entry point has moved by the time you read this, look under `usr/lib/yuki-iptv/` for the current main script.
+If the entry point has moved, look under `usr/lib/yuki-iptv/` for the current main script.
 
-### Project layout
+**Dependencies:** see `debian/control` for the authoritative list. `usr/lib/yuki-iptv/thirdparty/` vendors `mpv.py` and `xtream.py` directly rather than pulling them via pip.
 
-- `usr/lib/yuki-iptv/yuki-iptv.py` — main entry point
-- `usr/lib/yuki-iptv/yuki_iptv/` — the actual application code, split into modules (GUI, EPG, playlist parsing, XTream, recording, MPRIS, etc.)
-- `usr/lib/yuki-iptv/thirdparty/` — vendored third-party code (`mpv.py`, `xtream.py`) — these may carry their own license headers separate from the GPL, so check the files directly before redistributing modified copies
-- `usr/bin/yuki-iptv` — the installed launcher script
-- `usr/share/` — desktop file, icons, and other installed assets
-- `po/` — translation files
-- `debian/` — Debian packaging
+---
 
-## Making playlists for movies/series (VOD)
+### 🗓️ Other Distributions — Coming Eventually
+
+Packaging for other distributions (Debian/Ubuntu `.deb`, Arch, Fedora, etc.) is **planned but not yet available**. It may be a while before those land — this is a small project maintained in spare time.
+
+In the meantime, [running from source](#-running-from-source) works on any distro with Python 3, PyQt, and `mpv` available. If you'd like to contribute packaging for your distro, pull requests are very welcome.
+
+---
+
+## 🗂️ Project Layout
+
+```
+usr/lib/yuki-iptv/
+├── yuki-iptv.py          # Main entry point
+├── yuki_iptv/            # Application modules (GUI, EPG, playlist, XTream, recording, MPRIS…)
+└── thirdparty/           # Vendored libs: mpv.py, xtream.py (check individual license headers)
+usr/bin/yuki-iptv         # Installed launcher script
+usr/share/                # Desktop file, icons, assets
+po/                       # Translation files (.po / .pot)
+debian/                   # Debian packaging
+```
+
+---
+
+## 📺 Making Playlists for Movies / Series (VOD)
 
 Use the group `VOD` for movies:
 
@@ -72,7 +137,7 @@ https://example.com
 https://example.com
 ```
 
-Use `SxxExx` in an entry's name to have it recognized as a series episode — for example, `S01E12` for Season 1, Episode 12:
+Use `SxxExx` in an entry's name to have it recognised as a series episode — for example `S01E12` for Season 1, Episode 12:
 
 ```text
 #EXTM3U
@@ -80,26 +145,49 @@ Use `SxxExx` in an entry's name to have it recognized as a series episode — fo
 file:///home/user/Videos/SomeName_4/SomeName.S04E06.mp4
 ```
 
-## Localization
+---
+
+## 🌐 Localization
 
 Translation files live under `po/`. To help translate, edit the relevant `.po` file for your language and open a pull request. If a file for your language doesn't exist yet, generate one from `yuki-iptv.pot`.
 
-## License
+---
+
+## 🐛 Reporting Bugs
+
+Since this fork is in early testing, **bug reports are especially valuable right now.**
+
+Please include:
+- Your distribution and version (e.g. openSUSE Tumbleweed, snapshot date)
+- How you installed (OBS package / from source)
+- Steps to reproduce the issue
+- Any relevant log output or error messages
+
+→ [Open an issue](https://github.com/itachi-re/yuki-iptv/issues)
+
+---
+
+## 📜 License
 
 yuki-iptv is free software, licensed under the **GNU General Public License v3.0 or later**. See [`COPYING`](./COPYING) for the full license text.
 
 yuki-iptv is based on **Astroncia IPTV**, originally licensed GPL-3.0-only. The original yuki-iptv author received permission from Astroncia's author to relicense the code as GPL-3.0-or-later — see [`LICENSE-NOTICE.txt`](./LICENSE-NOTICE.txt) for that clarification.
 
-Font Awesome icons (Font Awesome Free 5.15.4) used in this project are licensed under CC BY 4.0 — see [`LICENSE-CC-BY-4.0.txt`](./LICENSE-CC-BY-4.0.txt).
+Font Awesome icons (Font Awesome Free 5.15.4) are licensed under CC BY 4.0 — see [`LICENSE-CC-BY-4.0.txt`](./LICENSE-CC-BY-4.0.txt).
 
-This software is distributed WITHOUT ANY WARRANTY; see `COPYING` for details.
+This software is distributed **WITHOUT ANY WARRANTY**; see `COPYING` for details.
 
-## Credits
+---
 
-- Originally created and maintained by **liya** ([codeberg.org/liya](https://codeberg.org/liya))
+## 🙏 Credits
+
+- Originally created and maintained by **[liya](https://codeberg.org/liya)**
 - Based on **Astroncia IPTV**
 - Continued here by **[itachi-re](https://github.com/itachi-re)** since June 2026
 
-## Contributing
+---
 
-Bug reports, fixes, features, and translations are all welcome — see [CONTRIBUTING.md](./CONTRIBUTING.md) before opening a pull request.
+## 🤝 Contributing
+
+Bug reports, fixes, features, and translations are all welcome.
+Please read [CONTRIBUTING.md](./CONTRIBUTING.md) before opening a pull request.
