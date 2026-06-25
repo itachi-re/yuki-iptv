@@ -102,11 +102,13 @@ If the entry point has moved, look under `usr/lib/yuki-iptv/` for the current ma
 
 ---
 
-### 🗓️ Other Distributions — Coming Eventually
+### 🗓️ Other Platforms — Coming Eventually
 
-Packaging for other distributions (Debian/Ubuntu `.deb`, Arch, Fedora, etc.) is **planned but not yet available**. It may be a while before those land — this is a small project maintained in spare time.
+> **🌍 Multiplatform support is on the roadmap.** The long-term goal is to support Windows and macOS in addition to Linux, but that is a significant undertaking and is not close to landing yet.
 
-In the meantime, [running from source](#-running-from-source) works on any distro with Python 3, PyQt, and `mpv` available. If you'd like to contribute packaging for your distro, pull requests are very welcome.
+On the Linux side, packaging for other distributions (Debian/Ubuntu `.deb`, Arch, Fedora, etc.) is also **planned but not yet available**. It may be a while — this is a small project maintained in spare time.
+
+In the meantime, [running from source](#-running-from-source) works on any Linux distro with Python 3, PyQt, and `mpv` available. If you'd like to contribute packaging or platform support, pull requests are very welcome.
 
 ---
 
