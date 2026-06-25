@@ -152,18 +152,18 @@ jobs:
               "$RESULT_URL" -o result.xml
 
             code=$(python3 - "$OBS_REPOSITORY" "$OBS_ARCH" "result.xml" <<'PYEOF'
-import sys, xml.etree.ElementTree as ET
-repo, arch, path = sys.argv[1], sys.argv[2], sys.argv[3]
-root = ET.parse(path).getroot()
-code = ""
-for r in root.findall("result"):
-    if r.get("repository") == repo and r.get("arch") == arch:
-        s = r.find("status")
-        code = s.get("code") if s is not None else ""
-        break
-print(code)
-PYEOF
-)
+          import sys, xml.etree.ElementTree as ET
+          repo, arch, path = sys.argv[1], sys.argv[2], sys.argv[3]
+          root = ET.parse(path).getroot()
+          code = ""
+          for r in root.findall("result"):
+              if r.get("repository") == repo and r.get("arch") == arch:
+                  s = r.find("status")
+                  code = s.get("code") if s is not None else ""
+                  break
+          print(code)
+          PYEOF
+            )
 
             echo "OBS status for ${OBS_PACKAGE}: ${code:-unknown}  [${elapsed}s elapsed]"
 
@@ -187,20 +187,20 @@ PYEOF
                 # "yuki-iptv-260626.0-1.1.noarch.rpm", not
                 # "yuki-iptv-v260626.0-1.1.noarch.rpm".
                 mapfile -t FILES < <(python3 - "$OBS_PACKAGE" "$RELEASE_TAG" "binarylist.xml" <<'PYEOF'
-import sys, xml.etree.ElementTree as ET
-pkg, tag, path = sys.argv[1], sys.argv[2], sys.argv[3]
-root = ET.parse(path).getroot()
-needle = f"-{tag.lstrip('v')}-"
-for b in root.findall("binary"):
-    name = b.get("filename", "")
-    if (name.startswith(pkg)
-            and needle in name
-            and name.endswith(".rpm")
-            and "debuginfo" not in name
-            and "debugsource" not in name):
-        print(name)
-PYEOF
-)
+          import sys, xml.etree.ElementTree as ET
+          pkg, tag, path = sys.argv[1], sys.argv[2], sys.argv[3]
+          root = ET.parse(path).getroot()
+          needle = f"-{tag.lstrip('v')}-"
+          for b in root.findall("binary"):
+              name = b.get("filename", "")
+              if (name.startswith(pkg)
+                      and needle in name
+                      and name.endswith(".rpm")
+                      and "debuginfo" not in name
+                      and "debugsource" not in name):
+                  print(name)
+          PYEOF
+                )
 
                 if [ "${#FILES[@]}" -gt 0 ]; then
                   ready="yes"
