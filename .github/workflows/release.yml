@@ -180,11 +180,35 @@ jobs:
                 ;;
 
               succeeded)
-                curl -sf \
+                # OBS normally exposes noarch RPMs under the x86_64 build job,
+                # but some packages publish under a dedicated noarch job instead.
+                # Try x86_64 first; fall back to noarch if the response is empty
+                # (a 200 with an empty <binarylist/>) or a 404.
+                ACTIVE_LIST_URL="$LIST_URL"
+                http_code=$(curl -sf \
                   --retry 5 --retry-delay 5 --retry-all-errors \
                   "${CURL_AUTH[@]}" \
                   -H "Accept: application/xml" \
-                  "$LIST_URL" -o binarylist.xml
+                  -w "%{http_code}" \
+                  "$LIST_URL" -o binarylist.xml 2>/dev/null || echo "000")
+                binary_count=$(python3 -c "
+          import xml.etree.ElementTree as ET
+          try:
+              print(len(ET.parse('binarylist.xml').getroot().findall('binary')))
+          except Exception:
+              print(0)
+          " 2>/dev/null || echo 0)
+                if [ "$http_code" != "200" ] || [ "$binary_count" -eq 0 ]; then
+                  NOARCH_LIST_URL="${OBS_API}/build/${OBS_PROJECT}/${OBS_REPOSITORY}/noarch/${OBS_PACKAGE}"
+                  echo "x86_64 list empty or unavailable (HTTP ${http_code}, ${binary_count} binaries) — trying noarch URL: ${NOARCH_LIST_URL}"
+                  curl -sf \
+                    --retry 5 --retry-delay 5 --retry-all-errors \
+                    "${CURL_AUTH[@]}" \
+                    -H "Accept: application/xml" \
+                    "$NOARCH_LIST_URL" -o binarylist.xml
+                  ACTIVE_LIST_URL="$NOARCH_LIST_URL"
+                fi
+                echo "Using binary list URL: ${ACTIVE_LIST_URL}"
 
                 # ── DEBUG: show every binary OBS returned ─────────────────
                 # Prints the full attribute map for every <binary> element so
@@ -200,17 +224,15 @@ jobs:
           PYEOF
                 echo "=============================================="
 
-                # Strip the leading 'v' from the tag before building the
-                # needle.  RPM Version fields never carry the 'v' prefix, so
-                # tag "v260626.0" produces filenames like
-                # "yuki-iptv-260626.0-1.1.noarch.rpm", not
+                # This package's spec sets Version: to the raw tag (including
+                # the 'v' prefix), so the RPM filenames look like
                 # "yuki-iptv-v260626.0-1.1.noarch.rpm".
+                # The needle therefore keeps the 'v' — no lstrip.
                 mapfile -t FILES < <(python3 - "$OBS_PACKAGE" "$RELEASE_TAG" "binarylist.xml" <<'PYEOF'
           import sys, xml.etree.ElementTree as ET
           pkg, tag, path = sys.argv[1], sys.argv[2], sys.argv[3]
           root = ET.parse(path).getroot()
-          ver   = tag.lstrip("v")          # "v260626.0" → "260626.0"
-          needle = f"-{ver}-"              # "-260626.0-"
+          needle = f"-{tag}-"              # "-v260626.0-"  (v prefix is kept)
           matched = []
           for b in root.findall("binary"):
               name = b.get("filename", "")
@@ -255,7 +277,7 @@ jobs:
             curl -sf \
               --retry 5 --retry-delay 5 --retry-all-errors \
               "${CURL_AUTH[@]}" \
-              "$LIST_URL/$f" -o "rpms/$f"
+              "$ACTIVE_LIST_URL/$f" -o "rpms/$f"
           done
 
           echo "--- downloaded files ---"
