@@ -107,12 +107,17 @@ jobs:
 
       # ── 3. Trigger OBS rebuild ────────────────────────────────────────────
       # Skipped entirely when OBS_TRIGGER_TOKEN is not set.
+      # NOTE: secrets context is not allowed in if: expressions; the check
+      # is done inside the shell instead.
       - name: Trigger OBS rebuild
-        if: ${{ secrets.OBS_TRIGGER_TOKEN != '' }}
         env:
           OBS_TRIGGER_TOKEN: ${{ secrets.OBS_TRIGGER_TOKEN }}
         run: |
           set -euo pipefail
+          if [ -z "${OBS_TRIGGER_TOKEN:-}" ]; then
+            echo "OBS_TRIGGER_TOKEN not set — skipping rebuild trigger."
+            exit 0
+          fi
           curl -sf \
             --retry 10 --retry-delay 5 --retry-all-errors \
             -X POST \
