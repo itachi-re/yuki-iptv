@@ -186,6 +186,20 @@ jobs:
                   -H "Accept: application/xml" \
                   "$LIST_URL" -o binarylist.xml
 
+                # ── DEBUG: show every binary OBS returned ─────────────────
+                # Prints the full attribute map for every <binary> element so
+                # you can see the exact filenames, versions, and arches before
+                # the filter runs.  Remove or gate behind a debug flag once
+                # the matching is confirmed correct.
+                echo "===== OBS binary list for ${OBS_PACKAGE} ====="
+                python3 - "binarylist.xml" <<'PYEOF'
+          import sys, xml.etree.ElementTree as ET
+          root = ET.parse(sys.argv[1]).getroot()
+          for b in root.findall("binary"):
+              print(dict(b.attrib))
+          PYEOF
+                echo "=============================================="
+
                 # Strip the leading 'v' from the tag before building the
                 # needle.  RPM Version fields never carry the 'v' prefix, so
                 # tag "v260626.0" produces filenames like
@@ -195,15 +209,25 @@ jobs:
           import sys, xml.etree.ElementTree as ET
           pkg, tag, path = sys.argv[1], sys.argv[2], sys.argv[3]
           root = ET.parse(path).getroot()
-          needle = f"-{tag.lstrip('v')}-"
+          ver   = tag.lstrip("v")          # "v260626.0" → "260626.0"
+          needle = f"-{ver}-"              # "-260626.0-"
+          matched = []
           for b in root.findall("binary"):
               name = b.get("filename", "")
-              if (name.startswith(pkg)
-                      and needle in name
-                      and name.endswith(".rpm")
-                      and "debuginfo" not in name
-                      and "debugsource" not in name):
-                  print(name)
+              if not name.endswith(".rpm"):
+                  continue
+              if "debuginfo" in name or "debugsource" in name:
+                  continue
+              if not name.startswith(pkg):
+                  print(f"SKIP (pkg):    {name}", file=sys.stderr)
+                  continue
+              if needle not in name:
+                  print(f"SKIP (needle={needle!r}): {name}", file=sys.stderr)
+                  continue
+              print(f"MATCH:         {name}", file=sys.stderr)
+              matched.append(name)
+          for m in matched:
+              print(m)
           PYEOF
                 )
 
