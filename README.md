@@ -21,11 +21,23 @@ Community-maintained continuation of the original [liya/yuki-iptv](https://codeb
 
 > **🧪 Early Testing Phase — Expect Bugs**
 >
-> This fork is in its **early stages**. Core functionality works, but rough edges exist and things may break between releases. Bug reports are not just tolerated — they are actively helpful. If something doesn't work, please [open an issue](https://github.com/itachi-re/yuki-iptv/issues).
+> This fork is in its **early stages**. Core functionality works, but rough edges
+> exist and things may break between releases. Bug reports are not just
+> tolerated — they are actively helpful. If something doesn't work, please
+> [open an issue](https://github.com/itachi-re/yuki-iptv/issues).
 
-The original upstream repository, [`liya/yuki-iptv`](https://codeberg.org/liya/yuki-iptv) on Codeberg, was **archived by its maintainer** and is no longer being actively developed. This repository is an independent, unofficial continuation starting from upstream's final commit (`72a32225be`, archived on 2025-08-27) and is maintained here going forward.
+The original upstream repository, [`liya/yuki-iptv`](https://codeberg.org/liya/yuki-iptv)
+on Codeberg, has since been **removed entirely** (as of this writing the
+repository returns a 404, and its listing on [Repology](https://repology.org/project/yuki-iptv/packages)
+now flags the upstream homepage as dead). This is a change from the project's
+earlier "archived" status. This repository is an independent, unofficial
+continuation starting from upstream's final known commit (`72a32225be`,
+archived on 2025-08-27) and is maintained here going forward.
 
-The full original commit history remains readable at the link above for anyone tracing this fork's lineage.
+Because the original repository is gone, the commit history linked above
+may also disappear if Codeberg or GitHub caches expire — anyone with a local
+clone predating the removal is encouraged to open an issue or PR so we can
+preserve as much of that history as possible.
 
 > **🔒 A note on trust:** this project's name has previously been targeted by lookalike forks bundling malicious code. Before installing from anywhere, verify the commit history traces cleanly back to a known source, and prefer release artifacts published directly from **this repository** over random third-party mirrors.
 
