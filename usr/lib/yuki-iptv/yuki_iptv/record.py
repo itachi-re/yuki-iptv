@@ -108,6 +108,7 @@ def record(
             user_agent,
             "-headers",
             http_referer + "\r\n" + origin_add,
+            "-extension_picky", "0",
             "-i",
             input_url,
             "-map",
