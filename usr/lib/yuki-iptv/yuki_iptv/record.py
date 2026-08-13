@@ -112,6 +112,7 @@ def record(
             "-reconnect", "1",
             "-reconnect_streamed", "1",
             "-reconnect_on_network_error", "1",
+            "-reconnect_on_http_error", "503",
             "-reconnect_delay_max", "5",
             "-i",
             input_url,
