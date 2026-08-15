@@ -468,12 +468,13 @@ jobs:
           mkdir -p ~/.ssh
           printf '%s\n' "$AUR_SSH_PRIVATE_KEY" > ~/.ssh/aur
           chmod 600 ~/.ssh/aur
-          ssh-keyscan -H aur.archlinux.org >> ~/.ssh/known_hosts 2>/dev/null
           cat > ~/.ssh/config <<'EOF'
           Host aur.archlinux.org
             IdentityFile ~/.ssh/aur
             User aur
-            StrictHostKeyChecking accept-new
+            IdentitiesOnly yes
+            StrictHostKeyChecking no
+            UserKnownHostsFile /dev/null
           EOF
           chmod 600 ~/.ssh/config
 
