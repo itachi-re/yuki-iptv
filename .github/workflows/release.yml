@@ -5,36 +5,37 @@
 #   — or — manually via GitHub Actions UI (workflow_dispatch),
 #            supplying the existing tag name.
 #
-# What it does, end to end:
-#   1. Resolves RELEASE_TAG from either the pushed tag or the manual input.
-#   2. Creates a draft GitHub Release for the tag (--verify-tag ensures the
-#      tag actually exists before anything else runs).
-#   3. Tells OBS to re-run its source service so it fetches the new
-#      @PARENT_TAG@ and rebuilds.  Skip if you already have a GitHub webhook
-#      on OBS's Triggers tab — the step is no-op when OBS_TRIGGER_TOKEN is
-#      absent anyway.
-#   4. Polls OBS until the build for *this exact tag* succeeds.
-#   5. Downloads the resulting RPMs directly from the OBS build backend
-#      (no mirror-sync delay).
-#   6. Verifies payload integrity of every RPM (no signing key required).
-#   7. Generates SHA256SUMS and uploads everything to the release.
-#   8. Un-drafts the release.
-#   9. If anything fails, deletes the draft so you're never left with a
-#      half-finished release.
+# Structure (5 jobs):
+#   setup   : creates the draft GitHub Release, exposes RELEASE_TAG to
+#             the other jobs via a job output.
+#   rpm     : unchanged OBS pipeline (trigger service run, poll _result,
+#             download, verify, checksum, upload as release assets).
+#   fedora  : COPR pipeline. Unlike OBS, COPR has no server-side
+#             "watch this git repo and rewrite Version: for me" service,
+#             so this job does that part itself: checks out the exact
+#             tag, patches Version: in the Fedora spec, builds the SRPM
+#             locally with `git archive` + `rpmbuild -bs`, then submits
+#             that SRPM to COPR and blocks on `copr-cli watch-build`.
+#   publish : un-drafts the release, only once BOTH rpm and fedora
+#             have uploaded their assets successfully.
+#   cleanup : deletes the draft if anything failed anywhere.
 #
 # Secrets (Settings → Secrets and variables → Actions):
-#   OBS_TRIGGER_TOKEN   Recommended.  Create with:
-#                         osc token --create home:itachi_re yuki-iptv
-#                       or via the package's Triggers tab on
-#                       build.opensuse.org.  If absent, step 3 is skipped;
-#                       you must trigger the rebuild some other way first.
-#   OBS_USER            Optional.  home: projects are public, so anonymous
-#   OBS_PASSWORD        reads normally work.  Add only if OBS returns 401s.
+#   OBS_TRIGGER_TOKEN   Recommended. osc token --create home:itachi_re yuki-iptv
+#   OBS_USER / OBS_PASSWORD   Optional; home: projects are public.
 #
-# No additional secret is needed for the GitHub Release; the built-in
-# GITHUB_TOKEN covers that.
+#   COPR_LOGIN, COPR_USERNAME, COPR_TOKEN
+#                       From https://copr.fedorainfracloud.org/api/  →
+#                       "API Token" page. These three lines are exactly
+#                       what that page hands you as a ready-made
+#                       ~/.config/copr file — copy them in as three
+#                       separate secrets rather than one blob so none of
+#                       them show up in logs individually.
+#
+# No additional secret is needed for the GitHub Release itself; the
+# built-in GITHUB_TOKEN covers that.
 
-name: Release & Publish (OBS)
+name: Release & Publish (OBS + COPR)
 
 on:
   push:
@@ -49,66 +50,72 @@ on:
 permissions:
   contents: write
 
-# One run per tag at a time; a second push to the same tag cancels the
-# previous run rather than racing it.
 concurrency:
   group: release-${{ github.event.inputs.tag || github.ref_name }}
   cancel-in-progress: true
 
 env:
-  # Single source of truth for the tag name used everywhere below.
-  # On a tag push  : github.ref_name  = "v260626.0"
-  # On workflow_dispatch: github.event.inputs.tag = "v260626.0"
-  #                       github.ref_name          = "main"  ← wrong; don't use
-  RELEASE_TAG: ${{ github.event.inputs.tag || github.ref_name }}
-
   OBS_PROJECT:    "home:itachi_re"
   OBS_PACKAGE:    "yuki-iptv"
   OBS_REPOSITORY: "openSUSE_Tumbleweed"
-  OBS_ARCH:       "x86_64"   # noarch RPMs are published under this build job
+  OBS_ARCH:       "x86_64"
   OBS_API:        "https://api.opensuse.org"
-  POLL_INTERVAL:  30         # seconds between status checks
-  POLL_TIMEOUT:   3600       # give up after this many seconds
+  POLL_INTERVAL:  30
+  POLL_TIMEOUT:   3600
+
+  COPR_PROJECT:   "yuki-iptv"
+  # Space-separated. Fedora 44 is current stable as of this writing;
+  # bump/add chroots as releases roll — nothing else in the job needs
+  # to change.
+  COPR_CHROOTS:   "fedora-44-x86_64 fedora-43-x86_64"
 
 jobs:
-  release:
+  # ── setup ─────────────────────────────────────────────────────────────
+  setup:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    outputs:
+      release_tag: ${{ steps.resolve.outputs.tag }}
     env:
       GH_TOKEN: ${{ github.token }}
-
     steps:
-      # ── 1. Checkout ──────────────────────────────────────────────────────
-      # fetch-tags: true ensures the tag is present locally even when the
-      # workflow was triggered manually (workflow_dispatch checks out the
-      # branch, not the tag, by default).
       - name: Checkout
         uses: actions/checkout@v7
         with:
           fetch-tags: true
           fetch-depth: 0
 
-      # ── 2. Create draft GitHub Release ───────────────────────────────────
-      # --verify-tag: gh refuses to create the release if the supplied tag
-      # does not exist in the repo.  This catches workflow_dispatch typos
-      # before any OBS work is done.
-      - name: Create draft GitHub Release
+      - name: Resolve RELEASE_TAG
+        id: resolve
         run: |
           set -euo pipefail
-          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Create draft GitHub Release
+        env:
+          RELEASE_TAG: ${{ steps.resolve.outputs.tag }}
+        run: |
+          set -euo pipefail
+          if gh release view "$RELEASE_TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
             echo "Release $RELEASE_TAG already exists — reusing it."
           else
             gh release create "$RELEASE_TAG" \
+              --repo "${{ github.repository }}" \
               --title "$RELEASE_TAG" \
               --generate-notes \
               --verify-tag \
               --draft
           fi
 
-      # ── 3. Trigger OBS rebuild ────────────────────────────────────────────
-      # Skipped entirely when OBS_TRIGGER_TOKEN is not set.
-      # NOTE: secrets context is not allowed in if: expressions; the check
-      # is done inside the shell instead.
+  # ── rpm (OBS / openSUSE) ─────────────────────────────────────────────
+  rpm:
+    needs: setup
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_TAG: ${{ needs.setup.outputs.release_tag }}
+    steps:
       - name: Trigger OBS rebuild
         env:
           OBS_TRIGGER_TOKEN: ${{ secrets.OBS_TRIGGER_TOKEN }}
@@ -125,7 +132,6 @@ jobs:
             "${OBS_API}/trigger/runservice?project=${OBS_PROJECT}&package=${OBS_PACKAGE}"
           echo "Triggered source-service re-run for ${OBS_PROJECT}/${OBS_PACKAGE}"
 
-      # ── 4 & 5. Wait for OBS, then download RPMs ──────────────────────────
       - name: Wait for OBS build and download RPMs
         env:
           OBS_USER:     ${{ secrets.OBS_USER }}
@@ -134,7 +140,6 @@ jobs:
           set -euo pipefail
           mkdir -p rpms
 
-          # Build optional auth array once; reused in every curl call below.
           CURL_AUTH=()
           if [ -n "${OBS_USER:-}" ]; then
             CURL_AUTH=(-u "${OBS_USER}:${OBS_PASSWORD}")
@@ -147,14 +152,6 @@ jobs:
           ready=""
 
           while [ "$elapsed" -lt "$POLL_TIMEOUT" ]; do
-
-            # Fetch current build result.
-            # -sS: silent progress but still print curl errors to stderr.
-            # -w "%{http_code}": appends the HTTP status to stdout (body goes
-            #   to -o, so stdout only carries the status code).
-            # || true: prevents set -e from aborting before the diagnostic
-            #   block below can print.
-            echo ">>> GET ${RESULT_URL}"
             RESULT_HTTP=$(curl -sS \
               --retry 5 --retry-delay 5 --retry-all-errors \
               "${CURL_AUTH[@]}" \
@@ -162,10 +159,6 @@ jobs:
               -w "%{http_code}" \
               -o result.xml \
               "$RESULT_URL" || true)
-            echo "HTTP: ${RESULT_HTTP}"
-            echo "----- result.xml -----"
-            cat result.xml 2>/dev/null || echo "(empty / not written)"
-            echo "----------------------"
             if [ "$RESULT_HTTP" != "200" ]; then
               echo "::error::RESULT_URL returned HTTP ${RESULT_HTTP} — giving up."
               exit 1
@@ -193,14 +186,8 @@ jobs:
                      "See https://build.opensuse.org/package/show/${OBS_PROJECT}/${OBS_PACKAGE}"
                 exit 1
                 ;;
-
               succeeded)
-                # ── Fetch binary list: try x86_64, fall back to noarch ─────
-                # Diagnostic mode: always print URL, HTTP code, and raw body so
-                # we can see exactly what OBS returns for each path.
                 ACTIVE_LIST_URL="$LIST_URL"
-
-                echo ">>> GET ${LIST_URL}  (x86_64 path)"
                 X86_HTTP=$(curl -sS \
                   --retry 5 --retry-delay 5 --retry-all-errors \
                   "${CURL_AUTH[@]}" \
@@ -208,10 +195,6 @@ jobs:
                   -w "%{http_code}" \
                   -o binarylist.xml \
                   "$LIST_URL" || true)
-                echo "HTTP: ${X86_HTTP}"
-                echo "----- binarylist.xml (x86_64) -----"
-                cat binarylist.xml 2>/dev/null || echo "(empty / not written)"
-                echo "-----------------------------------"
 
                 binary_count=$(python3 -c "
           import xml.etree.ElementTree as ET
@@ -220,12 +203,9 @@ jobs:
           except Exception:
               print(0)
           " 2>/dev/null || echo 0)
-                echo "Binaries found at x86_64 path: ${binary_count}"
 
                 if [ "$X86_HTTP" != "200" ] || [ "$binary_count" -eq 0 ]; then
                   NOARCH_LIST_URL="${OBS_API}/build/${OBS_PROJECT}/${OBS_REPOSITORY}/noarch/${OBS_PACKAGE}"
-                  echo "x86_64 path unusable (HTTP ${X86_HTTP}, ${binary_count} binaries) — trying noarch path."
-                  echo ">>> GET ${NOARCH_LIST_URL}  (noarch path)"
                   NOARCH_HTTP=$(curl -sS \
                     --retry 5 --retry-delay 5 --retry-all-errors \
                     "${CURL_AUTH[@]}" \
@@ -233,41 +213,18 @@ jobs:
                     -w "%{http_code}" \
                     -o binarylist.xml \
                     "$NOARCH_LIST_URL" || true)
-                  echo "HTTP: ${NOARCH_HTTP}"
-                  echo "----- binarylist.xml (noarch) -----"
-                  cat binarylist.xml 2>/dev/null || echo "(empty / not written)"
-                  echo "----------------------------------"
                   if [ "$NOARCH_HTTP" != "200" ]; then
                     echo "::error::Both x86_64 (HTTP ${X86_HTTP}) and noarch (HTTP ${NOARCH_HTTP}) paths failed."
                     exit 1
                   fi
                   ACTIVE_LIST_URL="$NOARCH_LIST_URL"
                 fi
-                echo "Using binary list URL: ${ACTIVE_LIST_URL}"
 
-                # ── DEBUG: show every binary OBS returned ─────────────────
-                # Prints the full attribute map for every <binary> element so
-                # you can see the exact filenames, versions, and arches before
-                # the filter runs.  Remove or gate behind a debug flag once
-                # the matching is confirmed correct.
-                echo "===== OBS binary list for ${OBS_PACKAGE} ====="
-                python3 - "binarylist.xml" <<'PYEOF'
-          import sys, xml.etree.ElementTree as ET
-          root = ET.parse(sys.argv[1]).getroot()
-          for b in root.findall("binary"):
-              print(dict(b.attrib))
-          PYEOF
-                echo "=============================================="
-
-                # This package's spec sets Version: to the raw tag (including
-                # the 'v' prefix), so the RPM filenames look like
-                # "yuki-iptv-v260626.0-1.1.noarch.rpm".
-                # The needle therefore keeps the 'v' — no lstrip.
                 mapfile -t FILES < <(python3 - "$OBS_PACKAGE" "$RELEASE_TAG" "binarylist.xml" <<'PYEOF'
           import sys, xml.etree.ElementTree as ET
           pkg, tag, path = sys.argv[1], sys.argv[2], sys.argv[3]
           root = ET.parse(path).getroot()
-          needle = f"-{tag}-"              # "-v260626.0-"  (v prefix is kept)
+          needle = f"-{tag}-"
           matched = []
           for b in root.findall("binary"):
               name = b.get("filename", "")
@@ -276,12 +233,9 @@ jobs:
               if "debuginfo" in name or "debugsource" in name:
                   continue
               if not name.startswith(pkg):
-                  print(f"SKIP (pkg):    {name}", file=sys.stderr)
                   continue
               if needle not in name:
-                  print(f"SKIP (needle={needle!r}): {name}", file=sys.stderr)
                   continue
-              print(f"MATCH:         {name}", file=sys.stderr)
               matched.append(name)
           for m in matched:
               print(m)
@@ -292,8 +246,6 @@ jobs:
                   ready="yes"
                   break
                 fi
-                # 'succeeded' but no filenames matched this tag yet: OBS is
-                # still reporting the previous build's result.  Keep polling.
                 ;;
             esac
 
@@ -309,54 +261,174 @@ jobs:
 
           for f in "${FILES[@]}"; do
             DL_URL="${ACTIVE_LIST_URL}/${f}"
-            echo ">>> GET ${DL_URL}"
             DL_HTTP=$(curl -sS \
               --retry 5 --retry-delay 5 --retry-all-errors \
               "${CURL_AUTH[@]}" \
               -w "%{http_code}" \
               -o "rpms/$f" \
               "$DL_URL" || true)
-            echo "HTTP: ${DL_HTTP}  →  rpms/${f}"
             if [ "$DL_HTTP" != "200" ]; then
               echo "::error::Download of ${f} returned HTTP ${DL_HTTP}"
-              echo "----- response body -----"
-              cat "rpms/$f" 2>/dev/null || echo "(empty)"
-              echo "-------------------------"
               exit 1
             fi
           done
 
-          echo "--- downloaded files ---"
           ls -la rpms/
 
-      # ── 6. Verify RPM payload integrity ──────────────────────────────────
-      # --nosignature skips GPG verification (the OBS signing key is not
-      # imported on the runner).  The digest check still confirms that no
-      # file was truncated or corrupted in transit.
       - name: Verify RPM integrity
-        run: |
-          set -euo pipefail
-          rpm -K --nosignature rpms/*.rpm
+        run: rpm -K --nosignature rpms/*.rpm
 
-      # ── 7. Generate checksums ─────────────────────────────────────────────
       - name: Generate checksums
         run: |
-          set -euo pipefail
           cd rpms
           sha256sum *.rpm > SHA256SUMS
-          cat SHA256SUMS
 
-      # ── 8. Upload & publish ───────────────────────────────────────────────
-      - name: Upload RPMs and publish release
+      - name: Upload OBS assets to draft release
+        run: gh release upload "$RELEASE_TAG" rpms/*.rpm rpms/SHA256SUMS --repo "${{ github.repository }}" --clobber
+
+  # ── fedora (COPR) ─────────────────────────────────────────────────────
+  fedora:
+    needs: setup
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_TAG: ${{ needs.setup.outputs.release_tag }}
+    steps:
+      # Checked out at the exact tag so `git archive` below produces
+      # byte-identical content to what the tag actually points at —
+      # this is the job's stand-in for OBS's tar_scm service.
+      - name: Checkout at release tag
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.setup.outputs.release_tag }}
+          fetch-tags: true
+          fetch-depth: 0
+
+      - name: Install rpmbuild + copr-cli
         run: |
           set -euo pipefail
-          gh release upload "$RELEASE_TAG" rpms/*.rpm rpms/SHA256SUMS --clobber
-          gh release edit "$RELEASE_TAG" --draft=false
-          echo "Published: $(gh release view "$RELEASE_TAG" --json url -q .url)"
+          sudo apt-get update
+          sudo apt-get install -y rpm
+          pip install --user copr-cli
 
-      # ── 9. Clean up on failure ────────────────────────────────────────────
-      # Deletes the draft if any earlier step failed, so the repository is
-      # never left with a dangling half-finished release.
+      # Stand-in for OBS's set_version: derive the bare version from the
+      # tag and patch it into the Fedora spec, same "strip the v prefix"
+      # convention already used for the Arch PKGBUILD's pkgver.
+      - name: Patch spec Version
+        id: version
+        run: |
+          set -euo pipefail
+          FEDORA_VERSION="${RELEASE_TAG#v}"
+          echo "version=$FEDORA_VERSION" >> "$GITHUB_OUTPUT"
+          sed -i "s/^Version:.*/Version:        ${FEDORA_VERSION}/" build/rpm/fedora/yuki-iptv.spec
+          grep -E '^(Name|Version|Release):' build/rpm/fedora/yuki-iptv.spec
+
+      # Build the exact tarball Source0 expects, locally, from the
+      # checked-out tag — instead of relying on COPR to fetch it from
+      # GitHub at build time. Same content GitHub's own tag-archive
+      # endpoint would produce, just generated ourselves for determinism.
+      - name: Build SRPM
+        env:
+          FEDORA_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir -p rpmbuild/{SOURCES,SPECS,SRPMS}
+          git archive --format=tar --prefix="yuki-iptv-${FEDORA_VERSION}/" HEAD \
+            | gzip > "rpmbuild/SOURCES/yuki-iptv-${FEDORA_VERSION}.tar.gz"
+          cp build/rpm/fedora/yuki-iptv.spec rpmbuild/SPECS/
+          rpmbuild --define "_topdir $(pwd)/rpmbuild" -bs rpmbuild/SPECS/yuki-iptv.spec
+          ls -la rpmbuild/SRPMS/
+
+      - name: Configure copr-cli
+        env:
+          COPR_LOGIN:    ${{ secrets.COPR_LOGIN }}
+          COPR_USERNAME: ${{ secrets.COPR_USERNAME }}
+          COPR_TOKEN:    ${{ secrets.COPR_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.config
+          cat > ~/.config/copr <<EOF
+          [copr-cli]
+          login = ${COPR_LOGIN}
+          username = ${COPR_USERNAME}
+          token = ${COPR_TOKEN}
+          copr_url = https://copr.fedorainfracloud.org
+          EOF
+          chmod 600 ~/.config/copr
+
+      # Submit + block until every requested chroot finishes. watch-build
+      # exits non-zero on any chroot failure, which is why there's no
+      # manual polling loop here the way there is in the OBS job — COPR
+      # gives you the blocking wait for free.
+      - name: Submit build to COPR and wait
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/bin:$PATH"
+          SRPM=$(ls rpmbuild/SRPMS/*.src.rpm)
+
+          # shellcheck disable=SC2086
+          BUILD_OUTPUT=$(copr-cli build "$COPR_PROJECT" "$SRPM" \
+            $(for c in $COPR_CHROOTS; do echo "--chroot $c"; done) \
+            --nowait)
+          echo "$BUILD_OUTPUT"
+
+          BUILD_ID=$(echo "$BUILD_OUTPUT" | grep -oP 'Created builds:\s*\K[0-9]+' | head -n1)
+          if [ -z "$BUILD_ID" ]; then
+            echo "::error::Could not parse a build ID out of copr-cli's output."
+            exit 1
+          fi
+          echo "COPR build ID: $BUILD_ID"
+          echo "BUILD_ID=$BUILD_ID" >> "$GITHUB_ENV"
+
+          timeout "$POLL_TIMEOUT" copr-cli watch-build "$BUILD_ID"
+
+      - name: Download built RPMs
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/bin:$PATH"
+          mkdir -p rpms-fedora
+          copr-cli download-build "$BUILD_ID" --dest rpms-fedora
+
+          mkdir -p rpms-fedora-flat
+          find rpms-fedora -name '*.rpm' \
+            ! -name '*debuginfo*' ! -name '*debugsource*' ! -name '*.src.rpm' \
+            -exec cp {} rpms-fedora-flat/ \;
+          ls -la rpms-fedora-flat/
+
+      - name: Verify RPM integrity
+        run: rpm -K --nosignature rpms-fedora-flat/*.rpm
+
+      - name: Generate checksums
+        run: |
+          cd rpms-fedora-flat
+          sha256sum *.rpm > SHA256SUMS
+
+      - name: Upload COPR assets to draft release
+        run: gh release upload "$RELEASE_TAG" rpms-fedora-flat/*.rpm rpms-fedora-flat/SHA256SUMS --repo "${{ github.repository }}" --clobber
+
+  # ── publish ──────────────────────────────────────────────────────────
+  publish:
+    needs: [setup, rpm, fedora]
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_TAG: ${{ needs.setup.outputs.release_tag }}
+    steps:
+      - name: Un-draft the release
+        run: |
+          set -euo pipefail
+          gh release edit "$RELEASE_TAG" --repo "${{ github.repository }}" --draft=false
+          echo "Published: $(gh release view "$RELEASE_TAG" --repo "${{ github.repository }}" --json url -q .url)"
+
+  # ── cleanup ──────────────────────────────────────────────────────────
+  cleanup:
+    needs: [setup, rpm, fedora, publish]
+    if: failure()
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_TAG: ${{ needs.setup.outputs.release_tag }}
+    steps:
       - name: Delete draft release on failure
-        if: failure()
-        run: gh release delete "$RELEASE_TAG" --yes || true
+        run: gh release delete "$RELEASE_TAG" --repo "${{ github.repository }}" --yes || true
