@@ -501,8 +501,15 @@ jobs:
       - name: Generate .SRCINFO
         run: |
           set -euo pipefail
-          chown -R builder:builder aur-repo
-          su builder -c "cd aur-repo && makepkg --printsrcinfo > .SRCINFO"
+          # Do this in a throwaway copy, not aur-repo itself — chowning
+          # aur-repo (including .git) to builder here previously left
+          # root unable to git-commit in the next step.
+          rm -rf /tmp/srcinfo-build
+          mkdir -p /tmp/srcinfo-build
+          cp aur-repo/PKGBUILD /tmp/srcinfo-build/
+          chown -R builder:builder /tmp/srcinfo-build
+          su builder -c "cd /tmp/srcinfo-build && makepkg --printsrcinfo > .SRCINFO"
+          cp /tmp/srcinfo-build/.SRCINFO aur-repo/.SRCINFO
           cat aur-repo/.SRCINFO
 
       - name: Commit and push to AUR
@@ -511,6 +518,7 @@ jobs:
           AUR_EMAIL: ${{ secrets.AUR_EMAIL }}
         run: |
           set -euo pipefail
+          git config --global --add safe.directory "$(pwd)/aur-repo"
           cd aur-repo
           git config user.name "itachi-re"
           git config user.email "${AUR_EMAIL:-noreply@users.noreply.github.com}"
