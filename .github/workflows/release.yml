@@ -468,15 +468,7 @@ jobs:
           mkdir -p ~/.ssh
           printf '%s\n' "$AUR_SSH_PRIVATE_KEY" > ~/.ssh/aur
           chmod 600 ~/.ssh/aur
-          cat > ~/.ssh/config <<'EOF'
-          Host aur.archlinux.org
-            IdentityFile ~/.ssh/aur
-            User aur
-            IdentitiesOnly yes
-            StrictHostKeyChecking no
-            UserKnownHostsFile /dev/null
-          EOF
-          chmod 600 ~/.ssh/config
+          echo "GIT_SSH_COMMAND=ssh -i $HOME/.ssh/aur -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" >> "$GITHUB_ENV"
 
       # Push-to-create: if this is the very first release, this clone is
       # of an AUR repo that doesn't have any commits yet, which is fine —
