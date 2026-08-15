@@ -98,6 +98,55 @@ Alternatively, install via YaST → Software Repositories → Add → Community 
 
 ---
 
+### 🎩 Fedora (COPR)
+
+Packages are built and published via [Fedora COPR](https://copr.fedorainfracloud.org/coprs/itachi-re/yuki-iptv/).
+
+> **🧪 Note:** COPR packages are currently in the testing phase and currently target `fedora-44-x86_64` and `fedora-43-x86_64`. If your release isn't covered yet, open an issue.
+
+**One-time repository setup + install:**
+
+```bash
+sudo dnf copr enable itachi-re/yuki-iptv
+sudo dnf install yuki-iptv
+```
+
+**Update (after a new release):**
+
+```bash
+sudo dnf update yuki-iptv
+```
+
+**Remove repository when no longer needed:**
+
+```bash
+sudo dnf copr disable itachi-re/yuki-iptv
+```
+
+---
+
+### 🏹 Arch Linux (AUR)
+
+yuki-iptv is available on the [AUR](https://aur.archlinux.org/packages/yuki-iptv) and builds from source using your own machine, same as any other AUR package.
+
+**Using an AUR helper (e.g. `yay` or `paru`):**
+
+```bash
+yay -S yuki-iptv
+```
+
+**Manually, without a helper:**
+
+```bash
+git clone https://aur.archlinux.org/yuki-iptv.git
+cd yuki-iptv
+makepkg -si
+```
+
+**Update (after a new release):** your AUR helper's normal update flow (`yay -Syu`, `paru -Syu`, etc.) will pick it up, or repeat the manual steps above.
+
+---
+
 ### 🔧 Running from Source
 
 ```bash
@@ -118,7 +167,7 @@ If the entry point has moved, look under `usr/lib/yuki-iptv/` for the current ma
 
 > **🌍 Multiplatform support is on the roadmap.** The long-term goal is to support Windows and macOS in addition to Linux, but that is a significant undertaking and is not close to landing yet.
 
-On the Linux side, packaging for other distributions (Debian/Ubuntu `.deb`, Arch, Fedora, etc.) is also **planned but not yet available**. It may be a while — this is a small project maintained in spare time.
+On the Linux side, a Debian/Ubuntu `.deb` is also **planned but not yet available**. openSUSE, Fedora, and Arch are covered above.
 
 In the meantime, [running from source](#-running-from-source) works on any Linux distro with Python 3, PyQt, and `mpv` available. If you'd like to contribute packaging or platform support, pull requests are very welcome.
 
@@ -173,7 +222,7 @@ Since this fork is in early testing, **bug reports are especially valuable right
 
 Please include:
 - Your distribution and version (e.g. openSUSE Tumbleweed, snapshot date)
-- How you installed (OBS package / from source)
+- How you installed (OBS package / COPR / AUR / from source)
 - Steps to reproduce the issue
 - Any relevant log output or error messages
 
