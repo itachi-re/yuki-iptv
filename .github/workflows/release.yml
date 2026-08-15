@@ -5,7 +5,7 @@
 #   — or — manually via GitHub Actions UI (workflow_dispatch),
 #            supplying the existing tag name.
 #
-# Structure (5 jobs):
+# Structure (6 jobs):
 #   setup   : creates the draft GitHub Release, exposes RELEASE_TAG to
 #             the other jobs via a job output.
 #   rpm     : unchanged OBS pipeline (trigger service run, poll _result,
@@ -16,8 +16,14 @@
 #             tag, patches Version: in the Fedora spec, builds the SRPM
 #             locally with `git archive` + `rpmbuild -bs`, then submits
 #             that SRPM to COPR and blocks on `copr-cli watch-build`.
-#   publish : un-drafts the release, only once BOTH rpm and fedora
-#             have uploaded their assets successfully.
+#   aur     : AUR has no build service at all — it only hosts PKGBUILD +
+#             .SRCINFO, and users' own machines build the package. So
+#             this job just bumps pkgver/sha256sums in build/arch/PKGBUILD,
+#             regenerates .SRCINFO with makepkg (needs an Arch container,
+#             since makepkg doesn't exist on Ubuntu runners), and git
+#             pushes both files to the AUR's own git remote over SSH.
+#   publish : un-drafts the release, only once rpm, fedora, and aur have
+#             all succeeded.
 #   cleanup : deletes the draft if anything failed anywhere.
 #
 # Secrets (Settings → Secrets and variables → Actions):
@@ -31,6 +37,18 @@
 #                       ~/.config/copr file — copy them in as three
 #                       separate secrets rather than one blob so none of
 #                       them show up in logs individually.
+#
+#   AUR_SSH_PRIVATE_KEY
+#                       A dedicated SSH keypair (ssh-keygen -t ed25519 -f
+#                       aur -N ""). Add the *public* half at
+#                       https://aur.archlinux.org/account/ → "My Account"
+#                       → SSH Public Key. Paste the *private* half in as
+#                       this secret. The very first push has to create the
+#                       AUR package; that happens automatically as long as
+#                       PKGBUILD's pkgbase matches the repo name
+#                       (yuki-iptv) and the key is registered first.
+#   AUR_EMAIL           Optional. Git commit author email for the AUR repo;
+#                       falls back to a generic noreply address if unset.
 #
 # No additional secret is needed for the GitHub Release itself; the
 # built-in GITHUB_TOKEN covers that.
@@ -347,6 +365,10 @@ jobs:
           COPR_TOKEN:    ${{ secrets.COPR_TOKEN }}
         run: |
           set -euo pipefail
+          if [ -z "${COPR_LOGIN:-}" ] || [ -z "${COPR_USERNAME:-}" ] || [ -z "${COPR_TOKEN:-}" ]; then
+            echo "::error::One or more of COPR_LOGIN / COPR_USERNAME / COPR_TOKEN secrets are unset or empty. Check Settings -> Secrets and variables -> Actions."
+            exit 1
+          fi
           mkdir -p ~/.config
           cat > ~/.config/copr <<EOF
           [copr-cli]
@@ -407,9 +429,109 @@ jobs:
       - name: Upload COPR assets to draft release
         run: gh release upload "$RELEASE_TAG" rpms-fedora-flat/*.rpm rpms-fedora-flat/SHA256SUMS --repo "${{ github.repository }}" --clobber
 
+  # ── aur (Arch User Repository) ──────────────────────────────────────
+  aur:
+    needs: setup
+    runs-on: ubuntu-latest
+    container: archlinux:base-devel
+    timeout-minutes: 30
+    env:
+      RELEASE_TAG: ${{ needs.setup.outputs.release_tag }}
+    steps:
+      # base-devel has makepkg but not git/openssh by default. makepkg
+      # also refuses to run as root (the default user in this image),
+      # so a throwaway unprivileged user is created for the one step
+      # that actually invokes it.
+      - name: Install tooling
+        run: |
+          set -euo pipefail
+          pacman -Syu --noconfirm --needed git openssh
+          useradd -m builder
+
+      - name: Checkout at release tag
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+          fetch-tags: true
+          fetch-depth: 0
+
+      - name: Configure SSH for AUR
+        env:
+          AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${AUR_SSH_PRIVATE_KEY:-}" ]; then
+            echo "::error::AUR_SSH_PRIVATE_KEY secret is unset. See the" \
+                 "comment block at the top of this file for setup steps."
+            exit 1
+          fi
+          mkdir -p ~/.ssh
+          printf '%s\n' "$AUR_SSH_PRIVATE_KEY" > ~/.ssh/aur
+          chmod 600 ~/.ssh/aur
+          ssh-keyscan -H aur.archlinux.org >> ~/.ssh/known_hosts 2>/dev/null
+          cat > ~/.ssh/config <<'EOF'
+          Host aur.archlinux.org
+            IdentityFile ~/.ssh/aur
+            User aur
+            StrictHostKeyChecking accept-new
+          EOF
+          chmod 600 ~/.ssh/config
+
+      # Push-to-create: if this is the very first release, this clone is
+      # of an AUR repo that doesn't have any commits yet, which is fine —
+      # AUR creates the package on first push as long as the SSH key is
+      # registered and PKGBUILD's pkgbase matches "yuki-iptv".
+      - name: Clone AUR package repo
+        run: git clone ssh://aur@aur.archlinux.org/yuki-iptv.git aur-repo
+
+      - name: Bump pkgver, pkgrel and checksum
+        id: pkgver
+        run: |
+          set -euo pipefail
+          PKGVER="${RELEASE_TAG#v}"
+          echo "pkgver=$PKGVER" >> "$GITHUB_OUTPUT"
+
+          cp build/arch/PKGBUILD aur-repo/PKGBUILD
+          cd aur-repo
+
+          sed -i "s/^pkgver=.*/pkgver=${PKGVER}/" PKGBUILD
+          sed -i "s/^pkgrel=.*/pkgrel=1/" PKGBUILD
+
+          # The real published tarball, not a local `git archive` —
+          # GitHub's tag-archive endpoint is what PKGBUILD's source=
+          # line points at, and that's what needs to match sha256sums.
+          curl -fsSL -o "/tmp/src.tar.gz" \
+            "https://github.com/itachi-re/yuki-iptv/archive/refs/tags/${RELEASE_TAG}.tar.gz"
+          SUM=$(sha256sum /tmp/src.tar.gz | cut -d' ' -f1)
+          sed -i "s/^sha256sums=.*/sha256sums=('${SUM}')/" PKGBUILD
+
+      - name: Generate .SRCINFO
+        run: |
+          set -euo pipefail
+          chown -R builder:builder aur-repo
+          su builder -c "cd aur-repo && makepkg --printsrcinfo > .SRCINFO"
+          cat aur-repo/.SRCINFO
+
+      - name: Commit and push to AUR
+        env:
+          PKGVER: ${{ steps.pkgver.outputs.pkgver }}
+          AUR_EMAIL: ${{ secrets.AUR_EMAIL }}
+        run: |
+          set -euo pipefail
+          cd aur-repo
+          git config user.name "itachi-re"
+          git config user.email "${AUR_EMAIL:-noreply@users.noreply.github.com}"
+          git add PKGBUILD .SRCINFO
+          if git diff --cached --quiet; then
+            echo "No changes to publish to AUR."
+            exit 0
+          fi
+          git commit -m "Update to ${PKGVER}"
+          git push origin master
+
   # ── publish ──────────────────────────────────────────────────────────
   publish:
-    needs: [setup, rpm, fedora]
+    needs: [setup, rpm, fedora, aur]
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
@@ -423,7 +545,7 @@ jobs:
 
   # ── cleanup ──────────────────────────────────────────────────────────
   cleanup:
-    needs: [setup, rpm, fedora, publish]
+    needs: [setup, rpm, fedora, aur, publish]
     if: failure()
     runs-on: ubuntu-latest
     env:
