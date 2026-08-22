@@ -315,8 +315,14 @@ jobs:
         run: gh release upload "$RELEASE_TAG" rpms/*.rpm rpms/SHA256SUMS --repo "${{ github.repository }}" --clobber
 
   # ── fedora (COPR) ─────────────────────────────────────────────────────
+  # continue-on-error: this target needs a COPR project + COPR_LOGIN /
+  # COPR_USERNAME / COPR_TOKEN secrets that don't exist yet. Until
+  # they're set up, let this job fail on its own without taking rpm/aur/
+  # deb (and the whole draft release) down with it — see publish's
+  # `needs` below, which deliberately does NOT include fedora.
   fedora:
     needs: setup
+    continue-on-error: true
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
@@ -440,8 +446,11 @@ jobs:
         run: gh release upload "$RELEASE_TAG" rpms-fedora-flat/*.rpm rpms-fedora-flat/SHA256SUMS --repo "${{ github.repository }}" --clobber
 
   # ── aur (Arch User Repository) ──────────────────────────────────────
+  # continue-on-error: same reasoning as fedora above — needs
+  # AUR_SSH_PRIVATE_KEY, which isn't set up yet.
   aur:
     needs: setup
+    continue-on-error: true
     runs-on: ubuntu-latest
     container: archlinux:base-devel
     timeout-minutes: 30
@@ -563,7 +572,12 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends debhelper devscripts dpkg-dev
+          # build-essential isn't in debian/control's Build-Depends (per
+          # Debian Policy §4.2, packages don't declare a dependency on
+          # the build-essential set) but dpkg-checkbuilddeps still
+          # requires the build-essential metapackage itself be present
+          # on the build host, so it has to be installed explicitly here.
+          sudo apt-get install -y --no-install-recommends build-essential debhelper devscripts dpkg-dev
 
       # Stand-in for OBS's set_version / the fedora job's spec patch:
       # derive the bare version from the tag and add a changelog stanza
@@ -618,8 +632,12 @@ jobs:
         run: gh release upload "$RELEASE_TAG" debs/*.deb debs/SHA256SUMS --repo "${{ github.repository }}" --clobber
 
   # ── publish ──────────────────────────────────────────────────────────
+  # fedora and aur are deliberately excluded here (see continue-on-error
+  # on those jobs above) — publish goes ahead on rpm + deb alone until
+  # COPR/AUR secrets are added. Re-add fedora, aur to this list (and drop
+  # continue-on-error from both jobs) once that setup is done.
   publish:
-    needs: [setup, rpm, fedora, aur, deb]
+    needs: [setup, rpm, deb]
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
