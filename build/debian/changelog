@@ -1,3 +1,18 @@
+yuki-iptv (260816.0) unstable; urgency=medium
+
+  * New maintainer: this is itachi-re/yuki-iptv, an independent
+    continuation of liya/yuki-iptv, which was archived upstream on
+    Codeberg in August 2025.
+  * Switch Debian package versioning to the fork's date-based release
+    tags (e.g. v260816.0 -> 260816.0), matching the scheme already
+    used by the Arch (AUR) and Fedora (COPR) packaging in this repo,
+    instead of the stale 0.0.19 carried over unchanged from upstream.
+  * debian/control: update Maintainer, Homepage, Vcs-Git and
+    Vcs-Browser to point at github.com/itachi-re/yuki-iptv instead of
+    the now-dead codeberg.org/liya/yuki-iptv.
+
+ -- itachi-re <xanbenson99@gmail.com>  Sun, 16 Aug 2026 03:06:47 +0600
+
 yuki-iptv (0.0.19) unstable; urgency=medium
 
   * Update python-mpv

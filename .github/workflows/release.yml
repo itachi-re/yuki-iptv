@@ -5,7 +5,7 @@
 #   — or — manually via GitHub Actions UI (workflow_dispatch),
 #            supplying the existing tag name.
 #
-# Structure (6 jobs):
+# Structure (7 jobs):
 #   setup   : creates the draft GitHub Release, exposes RELEASE_TAG to
 #             the other jobs via a job output.
 #   rpm     : unchanged OBS pipeline (trigger service run, poll _result,
@@ -22,8 +22,18 @@
 #             regenerates .SRCINFO with makepkg (needs an Arch container,
 #             since makepkg doesn't exist on Ubuntu runners), and git
 #             pushes both files to the AUR's own git remote over SSH.
-#   publish : un-drafts the release, only once rpm, fedora, and aur have
-#             all succeeded.
+#   deb     : plain .deb, built and attached directly as a release asset —
+#             there's no distro build service in the loop at all here
+#             (no OBS project, no COPR project). build/debian/source/format
+#             is "3.0 (native)", so like the Arch/Fedora jobs, version
+#             tracking is "strip the v prefix" — this job runs `dch
+#             --newversion "${RELEASE_TAG#v}"` to add a changelog stanza
+#             for the tag (native packages don't carry a -N debian
+#             revision), then builds with the same debian/rules ->
+#             dpkg-buildpackage path script/create-release-deb.sh uses
+#             locally.
+#   publish : un-drafts the release, only once rpm, fedora, aur, and deb
+#             have all succeeded.
 #   cleanup : deletes the draft if anything failed anywhere.
 #
 # Secrets (Settings → Secrets and variables → Actions):
@@ -530,9 +540,86 @@ jobs:
           git commit -m "Update to ${PKGVER}"
           git push origin master
 
+  # ── deb (plain .deb, no distro build service) ───────────────────────
+  deb:
+    needs: setup
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      RELEASE_TAG: ${{ needs.setup.outputs.release_tag }}
+    steps:
+      # Checked out at the exact tag, same reasoning as the fedora/aur
+      # jobs: dpkg-buildpackage on a "3.0 (native)" source builds
+      # straight from the working tree, so the tree has to be pinned to
+      # the tag first.
+      - name: Checkout at release tag
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.setup.outputs.release_tag }}
+          fetch-tags: true
+          fetch-depth: 0
+
+      - name: Install build tooling
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends debhelper devscripts dpkg-dev
+
+      # Stand-in for OBS's set_version / the fedora job's spec patch:
+      # derive the bare version from the tag and add a changelog stanza
+      # for it. build/debian/source/format is "3.0 (native)", so unlike
+      # a non-native package this deliberately has NO -N debian
+      # revision suffix — that convention already matches the existing
+      # hand-written 0.0.19-style entries in this changelog.
+      - name: Patch debian/changelog
+        id: version
+        env:
+          DEBEMAIL: itachi-re@users.noreply.github.com
+          DEBFULLNAME: itachi-re
+        run: |
+          set -euo pipefail
+          DEB_VERSION="${RELEASE_TAG#v}"
+          echo "version=$DEB_VERSION" >> "$GITHUB_OUTPUT"
+
+          if [ "$(dpkg-parsechangelog -l build/debian/changelog -S Version)" = "$DEB_VERSION" ]; then
+            echo "build/debian/changelog already has a ${DEB_VERSION} stanza — leaving it as-is."
+          else
+            dch --changelog build/debian/changelog --newversion "$DEB_VERSION" \
+              --distribution unstable "Release ${RELEASE_TAG}."
+          fi
+          dpkg-parsechangelog -l build/debian/changelog -S Version
+
+      - name: Build .deb
+        run: script/create-release-deb.sh
+
+      - name: Verify .deb metadata matches the release tag
+        env:
+          DEB_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          DEB_FILE="../yuki-iptv_${DEB_VERSION}_all.deb"
+          if [ ! -f "$DEB_FILE" ]; then
+            echo "::error::Expected $DEB_FILE, but it wasn't produced."
+            ls -la ..
+            exit 1
+          fi
+          dpkg-deb -I "$DEB_FILE" | grep -E '^ Version:'
+          mkdir -p debs
+          cp "$DEB_FILE" debs/
+
+      - name: Generate checksums
+        run: |
+          cd debs
+          sha256sum *.deb > SHA256SUMS
+
+      - name: Upload .deb asset to draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$RELEASE_TAG" debs/*.deb debs/SHA256SUMS --repo "${{ github.repository }}" --clobber
+
   # ── publish ──────────────────────────────────────────────────────────
   publish:
-    needs: [setup, rpm, fedora, aur]
+    needs: [setup, rpm, fedora, aur, deb]
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
@@ -546,7 +633,7 @@ jobs:
 
   # ── cleanup ──────────────────────────────────────────────────────────
   cleanup:
-    needs: [setup, rpm, fedora, aur, publish]
+    needs: [setup, rpm, fedora, aur, deb, publish]
     if: failure()
     runs-on: ubuntu-latest
     env:
