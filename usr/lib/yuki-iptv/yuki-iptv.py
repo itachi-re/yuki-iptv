@@ -3488,9 +3488,7 @@ if __name__ == "__main__":
                                 YukiData.movies[movies1]["tvg-group"]
                                 == current_movies_group
                             ):
-                                MovieWidget = YukiGUI.PlaylistWidget(
-                                    YukiGUI, YukiData.settings["hidechannellogos"]
-                                )
+                                MovieWidget = YukiGUI.PlaylistWidget(YukiGUI)
                                 MovieWidget.name_label.setText(
                                     YukiData.movies[movies1]["title"]
                                 )
