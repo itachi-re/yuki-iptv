@@ -1,12 +1,12 @@
 Source: yuki-iptv
 Section: video
 Priority: optional
-Maintainer: liya <liyaliya@tutamail.com>
+Maintainer: itachi-re <xanbenson99@gmail.com>
 Standards-Version: 4.6.2
 Build-Depends: debhelper-compat (= 13)
-Homepage: https://codeberg.org/liya/yuki-iptv
-Vcs-Git: https://codeberg.org/liya/yuki-iptv.git
-Vcs-Browser: https://codeberg.org/liya/yuki-iptv
+Homepage: https://github.com/itachi-re/yuki-iptv
+Vcs-Git: https://github.com/itachi-re/yuki-iptv.git
+Vcs-Browser: https://github.com/itachi-re/yuki-iptv
 Rules-Requires-Root: no
 
 Package: yuki-iptv
