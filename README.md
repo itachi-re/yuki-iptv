@@ -61,6 +61,7 @@ preserve as much of that history as possible.
 ---
 
 ## 📦 Installation
+[![Packaging status](https://repology.org/badge/vertical-allrepos/yuki-iptv.svg)](https://repology.org/project/yuki-iptv/versions)
 
 ### 🦎 openSUSE Tumbleweed (OBS — Recommended)
 
