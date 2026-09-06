@@ -3005,12 +3005,11 @@ if __name__ == "__main__":
                 pass
 
         def redraw_channels():
-            channels_1 = generate_channels()
-            update_tvguide()
             YukiData.row0 = win.listWidget.currentRow()
             val0 = win.listWidget.verticalScrollBar().value()
-            destroy_listwidget_items(win.listWidget)
             win.listWidget.clear()
+            channels_1 = generate_channels()
+            update_tvguide()
             if channels_1:
                 for channel_1 in channels_1.values():
                     channel_3 = channel_1
