@@ -40,6 +40,8 @@ import threading
 import traceback
 import subprocess
 import urllib.parse
+import gc
+gc.disable()
 import yuki_iptv.environ  # noqa: F401
 from pathlib import Path
 from functools import partial
