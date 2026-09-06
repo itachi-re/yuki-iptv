@@ -75,6 +75,7 @@ from yuki_iptv.misc import (
     format_bytes,
     format_seconds,
     get_current_time,
+    is_youtube_url,
 )
 from yuki_iptv.mpris import start_mpris, mpris_seeked, emit_mpris_change
 from yuki_iptv.record import (
@@ -1283,6 +1284,11 @@ if __name__ == "__main__":
                     logger.info("Using HTTP Referer: (empty)")
 
             YukiData.player.pause = False
+            try:
+                YukiData.player.ytdl = is_youtube_url(arg_override_play)
+            except Exception:
+                logger.warning("Could not toggle mpv ytdl option")
+                logger.warning(traceback.format_exc())
             YukiData.player.play(parse_specifiers_in_url(arg_override_play))
             if YukiData.event_handler:
                 try:

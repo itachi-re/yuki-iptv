@@ -22,6 +22,27 @@
 # https://creativecommons.org/licenses/by/4.0/
 #
 import time
+import urllib.parse
+
+YOUTUBE_HOSTS = (
+    "youtube.com",
+    "www.youtube.com",
+    "m.youtube.com",
+    "music.youtube.com",
+    "youtu.be",
+)
+
+
+def is_youtube_url(url):
+    """Return True if url points to a YouTube page that requires yt-dlp
+    (mpv's ytdl_hook) to resolve into a playable stream."""
+    try:
+        hostname = urllib.parse.urlparse(url).hostname or ""
+    except Exception:
+        return False
+    hostname = hostname.lower()
+    return hostname in YOUTUBE_HOSTS or hostname.endswith(".youtube.com")
+
 
 WINDOW_SIZE = (1200, 650)
 DOCKWIDGET_CONTROLPANEL_HEIGHT = int(WINDOW_SIZE[1] / 10)
