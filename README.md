@@ -12,7 +12,7 @@ Community-maintained continuation of the original [liya/yuki-iptv](https://codeb
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![GitHub Issues](https://img.shields.io/github/issues/itachi-re/yuki-iptv)](https://github.com/itachi-re/yuki-iptv/issues)
 [![Last Commit](https://img.shields.io/github/last-commit/itachi-re/yuki-iptv)](https://github.com/itachi-re/yuki-iptv/commits)
-
+[![Total Downloads](https://img.shields.io/github/downloads/itachi-re/yuki-iptv/total)](https://github.com/itachi-re/yuki-iptv/releases)
 </div>
 
 ---
