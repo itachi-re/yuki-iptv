@@ -21,18 +21,62 @@
 # Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com
 # https://creativecommons.org/licenses/by/4.0/
 #
+import functools
 import logging
+import subprocess
+from urllib.parse import urlparse
 from PyQt6 import QtCore
 from yuki_iptv.i18n import _
 from yuki_iptv.settings import parse_settings
 
 logger = logging.getLogger(__name__)
 
+# ffmpeg exit code for AVERROR_OPTION_NOT_FOUND ("Option ... not found.")
+FFMPEG_EXIT_OPTION_NOT_FOUND = 8
+
 
 class YukiData:
     ffmpeg_proc = None
     ffmpeg_processes = None
     show_record_exception = None
+
+
+def is_hls_url(url):
+    """Cheap heuristic: does this URL look like an HLS playlist?"""
+    try:
+        parsed = urlparse(url)
+    except ValueError:
+        return False
+    return ".m3u8" in parsed.path.lower() or ".m3u8" in parsed.query.lower()
+
+
+@functools.lru_cache(maxsize=1)
+def ffmpeg_supports_extension_picky():
+    """
+    -extension_picky is a private option of the hls demuxer, so it is only
+    valid if the installed ffmpeg knows it. Probe once and cache the result.
+    """
+    try:
+        result = subprocess.run(
+            ["ffmpeg", "-hide_banner", "-h", "demuxer=hls"],
+            stdin=subprocess.DEVNULL,
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=False,
+        )
+        return "extension_picky" in (result.stdout + result.stderr)
+    except Exception:
+        logger.warning("Could not probe ffmpeg for extension_picky support")
+        return False
+
+
+def strip_extension_picky(args):
+    args = list(args)
+    if "-extension_picky" in args:
+        i = args.index("-extension_picky")
+        del args[i : i + 2]
+    return args
 
 
 def is_ffmpeg_recording():
@@ -46,33 +90,56 @@ def is_ffmpeg_recording():
     return ret
 
 
+def _tail(data):
+    try:
+        return "\n".join(bytes(data).decode("utf-8").split("\n")[-15:])
+    except Exception:
+        return str(data)
+
+
 def exit_handler(process, exit_code, _exit_status):
     is_killed = False
     try:
         is_killed = process._yuki_killed
     except Exception:
         pass
-    if not is_killed:
-        logger.warning("ffmpeg process crashed")
-        if YukiData.show_record_exception:
-            standard_output = process.readAllStandardOutput()
-            try:
-                standard_output = bytes(standard_output).decode("utf-8")
-                standard_output = "\n".join(standard_output.split("\n")[-15:])
-            except Exception:
-                pass
-            standard_error = process.readAllStandardError()
-            try:
-                standard_error = bytes(standard_error).decode("utf-8")
-                standard_error = "\n".join(standard_error.split("\n")[-15:])
-            except Exception:
-                pass
-            YukiData.show_record_exception(
-                _("ffmpeg crashed!") + "\n"
-                "" + _("exit code:") + " " + str(exit_code) + ""
-                "\nstdout:\n" + str(standard_output) + ""
-                "\nstderr:\n" + str(standard_error)
-            )
+    if is_killed:
+        return
+    standard_output = process.readAllStandardOutput()
+    standard_error = process.readAllStandardError()
+
+    # -extension_picky only exists on the hls demuxer. If the heuristic was
+    # wrong and ffmpeg rejected it, retry once without it, on the same
+    # QProcess object so callers holding a reference keep a valid handle.
+    retry_arr = getattr(process, "_yuki_retry_arr", None)
+    if (
+        retry_arr
+        and exit_code == FFMPEG_EXIT_OPTION_NOT_FOUND
+        and b"extension_picky" in bytes(standard_error)
+    ):
+        logger.warning("ffmpeg rejected -extension_picky, retrying without it")
+        process._yuki_retry_arr = None
+        process.start("ffmpeg", retry_arr)
+        return
+
+    logger.warning("ffmpeg process crashed")
+    if YukiData.show_record_exception:
+        YukiData.show_record_exception(
+            _("ffmpeg crashed!") + "\n"
+            "" + _("exit code:") + " " + str(exit_code) + ""
+            "\nstdout:\n" + _tail(standard_output) + ""
+            "\nstderr:\n" + _tail(standard_error)
+        )
+
+
+def _start_ffmpeg(arr, retry_arr=None):
+    proc = QtCore.QProcess()
+    proc._yuki_retry_arr = retry_arr
+    proc.finished.connect(
+        lambda exit_code, exit_status: exit_handler(proc, exit_code, exit_status)
+    )
+    proc.start("ffmpeg", arr)
+    return proc
 
 
 def record(
@@ -98,7 +165,9 @@ def record(
             origin_add = "Origin: " + originURL + "\r\n"
     logger.info(f"Using user agent '{user_agent}' for record channel '{channel_name}'")
     logger.info(f"HTTP headers: '{http_referer}'")
+    retry_arr = None
     if input_url.startswith("http://") or input_url.startswith("https://"):
+        use_picky = is_hls_url(input_url) and ffmpeg_supports_extension_picky()
         arr = [
             "-nostats",
             "-hide_banner",
@@ -108,7 +177,7 @@ def record(
             user_agent,
             "-headers",
             http_referer + "\r\n" + origin_add,
-            "-extension_picky", "0",
+            *(["-extension_picky", "0"] if use_picky else []),
             "-reconnect", "1",
             "-reconnect_streamed", "1",
             "-reconnect_on_network_error", "1",
@@ -129,6 +198,8 @@ def record(
             "4096",
             out_file,
         ]
+        if use_picky:
+            retry_arr = strip_extension_picky(arr)
     else:
         arr = [
             "-nostats",
@@ -151,22 +222,9 @@ def record(
             out_file,
         ]
     if not is_return:
-        YukiData.ffmpeg_proc = QtCore.QProcess()
-        YukiData.ffmpeg_proc.start("ffmpeg", arr)
-        YukiData.ffmpeg_proc.finished.connect(
-            lambda exit_code, exit_status: exit_handler(
-                YukiData.ffmpeg_proc, exit_code, exit_status
-            )
-        )
+        YukiData.ffmpeg_proc = _start_ffmpeg(arr, retry_arr)
     else:
-        ffmpeg_ret_proc = QtCore.QProcess()
-        ffmpeg_ret_proc.start("ffmpeg", arr)
-        ffmpeg_ret_proc.finished.connect(
-            lambda exit_code, exit_status: exit_handler(
-                ffmpeg_ret_proc, exit_code, exit_status
-            )
-        )
-        return ffmpeg_ret_proc
+        return _start_ffmpeg(arr, retry_arr)
 
 
 def terminate_record_process(proc):
